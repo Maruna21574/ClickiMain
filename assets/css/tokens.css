@@ -1,0 +1,66 @@
+:root {
+  /* brand */
+  --pink: #F43182;
+  --pink-dim: #c62569;
+  --pink-glow: rgba(244, 49, 130, 0.35);
+
+  --black: #0B0B0D;
+  --black-soft: #141416;
+  --black-alt: #1a1b1e;
+  --white: #F7F7F8;
+  --white-dim: #C6C7CB;
+
+  --chrome-1: #2a2b2e;
+  --chrome-2: #d8d9db;
+  --chrome-3: #7c7e82;
+  --chrome-4: #eceded;
+  --chrome-5: #45464a;
+  --chrome-gradient: linear-gradient(115deg, var(--chrome-1) 0%, var(--chrome-2) 28%, var(--chrome-3) 50%, var(--chrome-4) 72%, var(--chrome-5) 100%);
+  --chrome-gradient-soft: linear-gradient(115deg, rgba(42,43,46,.7) 0%, rgba(216,217,219,.7) 28%, rgba(124,126,130,.7) 50%, rgba(236,237,237,.7) 72%, rgba(69,70,74,.7) 100%);
+
+  /* surfaces */
+  --bg: var(--black);
+  --bg-alt: var(--black-soft);
+  --bg-raised: var(--black-alt);
+  --text: var(--white);
+  --text-dim: var(--white-dim);
+  --text-faint: #8a8b90;
+  --border: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.18);
+
+  /* type */
+  --font-display: 'Space Grotesk', 'Arial', sans-serif;
+  --font-body: 'Inter', 'Segoe UI', sans-serif;
+
+  --fs-xs: 0.8125rem;
+  --fs-sm: 0.9375rem;
+  --fs-base: 1rem;
+  --fs-lg: 1.125rem;
+  --fs-xl: 1.375rem;
+  --fs-h3: clamp(1.4rem, 1.1rem + 1.2vw, 2rem);
+  --fs-h2: clamp(2rem, 1.5rem + 2.2vw, 3.2rem);
+  --fs-h1: clamp(2.6rem, 1.6rem + 4.6vw, 5.2rem);
+
+  /* layout */
+  --container: 1240px;
+  --container-narrow: 860px;
+  --gutter: clamp(1.25rem, 2vw, 2.5rem);
+  --section-pad: clamp(4.5rem, 6vw, 8rem);
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 28px;
+  --radius-pill: 999px;
+
+  /* motion */
+  --ease: cubic-bezier(.16, 1, .3, 1);
+  --ease-soft: cubic-bezier(.4, 0, .2, 1);
+  --dur-fast: 200ms;
+  --dur-base: 450ms;
+  --dur-slow: 900ms;
+
+  --shadow-card: 0 20px 60px -25px rgba(0, 0, 0, 0.65);
+  --shadow-pink: 0 16px 40px -12px rgba(244, 49, 130, 0.45);
+
+  --z-header: 100;
+  --z-overlay: 200;
+}

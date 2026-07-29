@@ -1,0 +1,11 @@
+# Runtime dáta (vytvára si PHP samo, netreba verzovať)
+/data/clicki.sqlite
+/data/*.sqlite-journal
+
+# Nahraté fotky projektov (obsah, nie kód)
+/uploads/projects/*
+!/uploads/projects/.gitkeep
+
+# OS / editor
+.DS_Store
+Thumbs.db

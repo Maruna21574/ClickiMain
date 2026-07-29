@@ -1,0 +1,45 @@
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes floatY {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+.float { animation: floatY 6s ease-in-out infinite; }
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+@keyframes spinSlow {
+  to { transform: rotate(360deg); }
+}
+.spin-slow { animation: spinSlow 18s linear infinite; }
+
+@keyframes shineSweep {
+  from { background-position: -200% 0; }
+  to { background-position: 200% 0; }
+}
+.text-gradient--animated {
+  background: linear-gradient(115deg, var(--chrome-1) 0%, var(--chrome-2) 20%, var(--chrome-4) 35%, var(--chrome-2) 50%, var(--chrome-1) 65%, var(--chrome-3) 100%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: shineSweep 6s linear infinite;
+}
+
+@keyframes scrollCue {
+  0% { transform: translateY(0); opacity: 1; }
+  70% { opacity: 0.3; }
+  100% { transform: translateY(14px); opacity: 0; }
+}
+.scroll-cue__dot { animation: scrollCue 1.8s ease-in-out infinite; }
+
+.hero-glow {
+  position: absolute; border-radius: 50%; filter: blur(80px);
+  background: radial-gradient(circle, var(--pink-glow), transparent 70%);
+  animation: pulseGlow 5s ease-in-out infinite;
+  pointer-events: none;
+}
