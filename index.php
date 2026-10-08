@@ -7,11 +7,11 @@ $activeNav = 'home';
 
 $serviceIcons = [
     'web' => 'code',
-    'konfiguratory' => 'sliders',
+    'seo' => 'search',
+    'sprava-webu' => 'shield',
     'socialne-siete' => 'share',
     'grafika' => 'palette',
     'foto' => 'camera',
-    'dron' => 'drone',
 ];
 $services = td('services');
 $featured = get_projects(null, 6, true);
@@ -28,9 +28,9 @@ require __DIR__ . '/templates/header.php';
       <span class="line"><?= h(t('home.hero.title_start')) ?></span>
       <span class="line text-gradient--animated"><?= h(t('home.hero.title_highlight')) ?></span>
     </h1>
-    <p class="hero__subtitle lead"><?= h(t('home.hero.subtitle')) ?></p>
+    <p class="hero__subtitle lead"><?= brand(t('home.hero.subtitle')) ?></p>
     <div class="hero__actions">
-      <a href="/kontakt.php" class="btn btn--primary"><?= icon('arrow-right') ?> <?= h(t('home.hero.cta_primary')) ?></a>
+      <a href="/ponuka.php" class="btn btn--primary"><?= icon('arrow-right') ?> <?= h(t('home.hero.cta_primary')) ?></a>
       <a href="/portfolio.php" class="btn btn--ghost"><?= h(t('home.hero.cta_secondary')) ?></a>
     </div>
   </div>
@@ -71,7 +71,7 @@ require __DIR__ . '/templates/header.php';
       <p class="lead" style="margin-inline:auto;margin-top:1rem;"><?= h(t('home.services.subtitle')) ?></p>
     </div>
 
-    <div class="grid" style="grid-template-columns:repeat(3,1fr);" data-reveal>
+    <div class="grid services-grid" data-reveal>
       <?php foreach ($services as $slug => $svc): ?>
       <a href="/sluzby.php#<?= h($slug) ?>" class="card service-card">
         <span class="icon-tile"><?= icon($serviceIcons[$slug] ?? 'star') ?></span>
@@ -94,14 +94,15 @@ require __DIR__ . '/templates/header.php';
       <p class="eyebrow"><?= h(t('home.process.eyebrow')) ?></p>
       <h2><?= h(t('home.process.title')) ?></h2>
     </div>
-    <div class="grid process-grid" data-reveal>
-      <?php foreach (td('process') as $step): ?>
-      <div class="process-step">
+    <ol class="timeline" data-reveal>
+      <?php foreach (td('process') as $i => $step): ?>
+      <li class="timeline__step">
+        <span class="timeline__node"><?= icon(['mail', 'palette', 'code', 'shield'][$i] ?? 'check') ?></span>
         <h3><?= h($step['title']) ?></h3>
         <p><?= h($step['desc']) ?></p>
-      </div>
+      </li>
       <?php endforeach; ?>
-    </div>
+    </ol>
   </div>
 </section>
 
@@ -135,7 +136,7 @@ require __DIR__ . '/templates/header.php';
 <section class="section">
   <div class="container">
     <div class="section-head section-head--center" data-reveal>
-      <p class="eyebrow" style="justify-content:center"><?= h(t('home.why.eyebrow')) ?></p>
+      <p class="eyebrow" style="justify-content:center"><?= brand(t('home.why.eyebrow')) ?></p>
       <h2><?= h(t('home.why.title')) ?></h2>
     </div>
     <div class="grid diff-grid" data-reveal>
@@ -144,30 +145,6 @@ require __DIR__ . '/templates/header.php';
         <span class="icon-tile"><?= icon($d['icon']) ?></span>
         <h3><?= h($d['title']) ?></h3>
         <p><?= h($d['desc']) ?></p>
-      </div>
-      <?php endforeach; ?>
-    </div>
-  </div>
-</section>
-
-<section class="section section--alt">
-  <div class="container">
-    <div class="section-head section-head--center" data-reveal>
-      <p class="eyebrow" style="justify-content:center"><?= h(t('home.testimonials.eyebrow')) ?></p>
-      <h2><?= h(t('home.testimonials.title')) ?></h2>
-    </div>
-    <div class="grid testimonial-grid" data-reveal>
-      <?php foreach (td('testimonials') as $tm): ?>
-      <div class="card testimonial-card">
-        <?= icon('quote') ?>
-        <blockquote>&bdquo;<?= h($tm['quote']) ?>&ldquo;</blockquote>
-        <footer>
-          <span class="testimonial-card__avatar"><?= h(mb_substr($tm['author'], 0, 1)) ?></span>
-          <div>
-            <cite><?= h($tm['author']) ?></cite>
-            <span class="role"><?= h($tm['role']) ?></span>
-          </div>
-        </footer>
       </div>
       <?php endforeach; ?>
     </div>

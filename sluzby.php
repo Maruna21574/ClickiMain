@@ -5,15 +5,31 @@ $pageTitle = t('meta.services_title');
 $pageDesc = t('meta.services_desc');
 $activeNav = 'services';
 
-$serviceIcons = [
-    'web' => 'code',
-    'konfiguratory' => 'sliders',
-    'socialne-siete' => 'share',
-    'grafika' => 'palette',
-    'foto' => 'camera',
-    'dron' => 'drone',
-];
 $services = td('services');
+
+// obrázky pre vizuály pri službách — berú sa z portfólia, chýbajúce projekty sa preskočia
+$cover = function (string $slug): ?array {
+    $p = get_project_by_slug($slug);
+    if (!$p || empty($p['cover_image'])) return null;
+    return ['src' => $p['cover_image'], 'url' => preg_replace('#^https?://(www\.)?#i', '', rtrim($p['live_url'] ?? '', '/')), 'id' => (int)$p['id']];
+};
+$photoSlugs = ['svadobna-fotografia', 'portretna-fotografia', 'eventova-fotografia', 'rodinna-fotografia', 'tehotenska-fotografia', 'atelierova-fotografia'];
+$photoCovers = array_values(array_filter(array_map($cover, $photoSlugs)));
+// 12 fotiek do mriežky + 4 do "stories": titulky albumov doplnené fotkami zo svadobného albumu
+$social = array_column($photoCovers, 'src');
+if ($photoCovers) {
+    foreach (array_slice(get_project_images($photoCovers[0]['id']), 0, 16 - count($social)) as $im) {
+        $social[] = $im['image_path'];
+    }
+}
+$photoBySlug = array_column(array_filter(array_map(fn($s) => ($c = $cover($s)) ? ['slug' => $s, 'src' => $c['src']] : null, $photoSlugs)), 'src', 'slug');
+$media = [
+    'web' => array_values(array_filter([$cover('hotel-hradok'), $cover('regen-zilina-masaze')])),
+    'seo_bg' => $cover('makiva-epoxidovy-nabytok')['src'] ?? null,
+    'social' => array_slice($social, 0, 12),
+    'stories' => array_slice($social, 12, 4),
+    'photos' => array_values(array_filter([$photoBySlug['svadobna-fotografia'] ?? null, $photoBySlug['portretna-fotografia'] ?? null, $photoBySlug['rodinna-fotografia'] ?? null])),
+];
 
 require __DIR__ . '/templates/header.php';
 ?>
@@ -55,7 +71,7 @@ require __DIR__ . '/templates/header.php';
       </div>
 
       <div class="service-detail__visual" data-reveal>
-        <?= icon($serviceIcons[$slug] ?? 'star', 'icon icon-big') ?>
+        <?php require __DIR__ . '/templates/service-visual.php'; ?>
       </div>
     </div>
   </section>

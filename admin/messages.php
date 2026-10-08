@@ -39,6 +39,9 @@ require __DIR__ . '/../templates/admin-header.php';
     <div style="padding-top:1rem;">
       <p style="font-size:var(--fs-sm);color:var(--text-faint);margin-bottom:.6rem;">
         Telefón: <?= h($m['phone'] ?: '—') ?> · Rozpočet: <?= h($m['budget'] ?: '—') ?>
+        <?php if (preg_match('#^https?://#i', $m['website'] ?? '')): ?>
+        · Aktuálny web: <a href="<?= h($m['website']) ?>" target="_blank" rel="noopener noreferrer" style="color:var(--pink);"><?= h(preg_replace('#^https?://(www\.)?#i', '', rtrim($m['website'], '/'))) ?></a>
+        <?php endif; ?>
       </p>
       <p style="white-space:pre-wrap;"><?= h($m['message']) ?></p>
       <div class="row-actions" style="margin-top:1rem;">

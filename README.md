@@ -31,8 +31,11 @@ Apache (Menu → Apache → reštart) a mal by sa `clicki.test` vytvoriť automa
 
 ## Čo je pripravené na výmenu
 
-- **Portfólio** — 12 demo projektov s vygenerovanými chrómovými SVG náhľadmi. Zmaž ich a
-  pridaj reálne cez `/admin` (Projekty → Nový projekt), vrátane fotiek a galérie.
+- **Portfólio** — reálne projekty sú v lokálnej databáze `data/clicki.sqlite` a ich fotky
+  v `uploads/projects/` (ani jedno nie je v gite). Pri nasadení nahraj na hosting aj tieto dva,
+  inak začne web s prázdnym portfóliom. Nové projekty sa pridávajú cez `/admin` (Projekty →
+  Nový projekt), vrátane fotiek, galérie a odkazu na live ukážku. Vo filtri portfólia sa
+  zobrazujú len kategórie, ktoré majú aspoň jeden projekt.
 - **Texty webu** (nadpisy, popisy služieb, referencie, FAQ, hodnoty, tím) — `inc/i18n/sk.php`
   a `inc/i18n/en.php`. Referencie klientov (`testimonials`) sú zámerne vzorové — nahraď
   reálnymi, keď budú k dispozícii.

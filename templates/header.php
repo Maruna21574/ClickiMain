@@ -33,8 +33,10 @@ $bodyClass = $bodyClass ?? '';
 <link rel="stylesheet" href="/assets/css/components.css">
 <link rel="stylesheet" href="/assets/css/animations.css">
 <link rel="stylesheet" href="/assets/css/pages.css">
+<link rel="stylesheet" href="/assets/css/fx.css">
 </head>
 <body class="<?= h($bodyClass) ?>">
+<div class="scroll-progress" aria-hidden="true"><span></span></div>
 <a href="#main" class="skip-link">Preskočiť na obsah</a>
 
 <header class="site-header">
@@ -59,7 +61,10 @@ $bodyClass = $bodyClass ?? '';
     </nav>
 
     <div class="header-actions">
-      <a href="/kontakt.php" class="btn btn--primary btn--sm nav-cta-desktop"><?= h(t('nav.cta')) ?></a>
+      <button type="button" class="cmdk-trigger" data-cmdk-open aria-label="<?= h(t('cmdk.open')) ?> (Ctrl + K)" aria-haspopup="dialog">
+        <?= icon('search') ?><span class="cmdk-trigger__label"><?= h(t('cmdk.open')) ?></span><kbd data-cmdk-kbd>Ctrl K</kbd>
+      </button>
+      <a href="/ponuka.php" class="btn btn--primary btn--sm nav-cta-desktop"><?= h(t('nav.cta')) ?></a>
       <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="main-nav" aria-label="Menu">
         <?= icon('menu') ?>
       </button>

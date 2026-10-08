@@ -125,6 +125,9 @@ p.lead { font-size: var(--fs-lg); color: var(--text-dim); }
 }
 .text-pink { color: var(--pink); }
 
+/* logo Clicki vložené namiesto slova v texte (brand() v functions.php) */
+.brand-inline { display: inline-block; height: 0.95em; width: auto; vertical-align: -0.12em; margin-inline: 0.05em; }
+
 /* reveal-on-scroll (progressive enhancement, see main.js) */
 [data-reveal] {
   opacity: 0;

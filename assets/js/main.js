@@ -13,6 +13,20 @@
     window.addEventListener('scroll', onScroll, { passive: true });
   }
 
+  /* ---------- floating scroll-to-top ---------- */
+  var scrollTopBtn = document.querySelector('.scroll-top');
+  if (scrollTopBtn) {
+    var toggleScrollTop = function () {
+      scrollTopBtn.classList.toggle('is-visible', window.scrollY > 600);
+    };
+    toggleScrollTop();
+    window.addEventListener('scroll', toggleScrollTop, { passive: true });
+    scrollTopBtn.addEventListener('click', function () {
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+    });
+  }
+
   /* ---------- mobile nav ---------- */
   var toggle = document.querySelector('.nav-toggle');
   var nav = document.querySelector('.main-nav');

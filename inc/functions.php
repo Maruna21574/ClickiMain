@@ -9,6 +9,13 @@ function h(?string $s): string
     return htmlspecialchars($s ?? '', ENT_QUOTES, 'UTF-8');
 }
 
+/** Ako h(), ale slovo "Clicki" v texte nahradí inline logom (len pre viditeľný text, nie pre title/meta/alt). */
+function brand(?string $s): string
+{
+    $logo = '<img src="/assets/img/clicki_logo_white.png" alt="Clicki" class="brand-inline">';
+    return preg_replace('/\bClicki\b/u', $logo, h($s));
+}
+
 /* ---------- language ---------- */
 
 function current_lang(): string
@@ -36,7 +43,7 @@ function t(string $key): string
     return is_string($val) ? $val : $key;
 }
 
-/** Ako t(), ale pre štruktúrovaný obsah (polia — services, faq, testimonials...). */
+/** Ako t(), ale pre štruktúrovaný obsah (polia — services, faq, values...). */
 function td(string $key): array
 {
     $dict = load_i18n();
@@ -105,10 +112,149 @@ function format_date(string $sqlDate): string
     return $ts ? date('j.n.Y', $ts) : $sqlDate;
 }
 
+/**
+ * Upraví URL z formulára: doplní https://, ak chýba. Prázdny vstup vráti '' (pole je nepovinné),
+ * neplatnú adresu vráti null.
+ */
+function normalize_url(string $raw): ?string
+{
+    $url = trim($raw);
+    if ($url === '') {
+        return '';
+    }
+    if (!preg_match('#^https?://#i', $url)) {
+        $url = 'https://' . $url;
+    }
+    return filter_var($url, FILTER_VALIDATE_URL) && str_contains((string)parse_url($url, PHP_URL_HOST), '.') ? $url : null;
+}
+
 function redirect(string $url): void
 {
     header('Location: ' . $url);
     exit;
+}
+
+/* ---------- cenová kalkulačka (ponuka.php) ---------- */
+
+function pricing(): array
+{
+    static $cfg = null;
+    return $cfg ??= require __DIR__ . '/pricing.php';
+}
+
+/** Vyberie SK/EN text z cenníka (['sk' => ..., 'en' => ...]). */
+function pl(array $labels): string
+{
+    return $labels[current_lang()] ?? $labels['sk'] ?? '';
+}
+
+function format_price(int $eur): string
+{
+    return number_format($eur, 0, ',', "\u{00A0}") . "\u{00A0}€";
+}
+
+/**
+ * Zoznam toho, čo si návštevník vybral (bez cien) — zobrazuje sa v súhrne na ponuka.php.
+ * Rovnakú logiku má assets/js/ponuka.js.
+ */
+function quote_selection(array $in): array
+{
+    $cfg = pricing();
+    $typeKey = isset($cfg['types'][$in['type'] ?? '']) ? $in['type'] : array_key_first($cfg['types']);
+    $type = $cfg['types'][$typeKey];
+    $out = [pl($type['label'])];
+
+    if (!empty($type['pages'])) {
+        $pages = max(1, min($type['pages']['max'], (int)($in['pages'] ?? $type['pages']['included'])));
+        $out[] = sprintf(t('quote.pages_item'), $pages);
+    }
+    if (!empty($type['products'])) {
+        $p = $cfg['products'][$in['products'] ?? ''] ?? reset($cfg['products']);
+        $out[] = pl($p['label']);
+    }
+    $chosen = array_map('strval', (array)($in['features'] ?? []));
+    foreach ($cfg['feature_groups'] as $group) {
+        if (in_array($typeKey, $group['types'], true)) {
+            foreach ($group['items'] as $key => $item) {
+                if (in_array($key, $chosen, true)) {
+                    $out[] = pl($item['label']);
+                }
+            }
+        }
+    }
+    $langs = (int)($in['languages'] ?? 0);
+    if ($langs > 0 && isset($cfg['languages']['options'][$langs])) {
+        $out[] = t('quote.languages') . ': ' . pl($cfg['languages']['options'][$langs]);
+    }
+    $careKey = isset($cfg['care'][$in['care'] ?? '']) ? $in['care'] : array_key_first($cfg['care']);
+    if ($careKey !== array_key_first($cfg['care'])) {
+        $out[] = pl($cfg['care'][$careKey]['label']);
+    }
+    if (!empty($in['express'])) {
+        $out[] = pl($cfg['express']['label']);
+    }
+    return $out;
+}
+
+/**
+ * Interný cenový odhad z volieb formulára — len do správy pre admina, klient ho nevidí.
+ * Neznáme alebo pre daný typ nepovolené voľby ignoruje.
+ */
+function quote_estimate(array $in): array
+{
+    $cfg = pricing();
+    $typeKey = isset($cfg['types'][$in['type'] ?? '']) ? $in['type'] : array_key_first($cfg['types']);
+    $type = $cfg['types'][$typeKey];
+    $items = [['label' => pl($type['label']), 'price' => $type['price'], 'from' => !empty($type['from'])]];
+
+    if (!empty($type['pages'])) {
+        $pages = max(1, min($type['pages']['max'], (int)($in['pages'] ?? $type['pages']['included'])));
+        $extra = max(0, $pages - $type['pages']['included']);
+        if ($extra) {
+            $items[] = ['label' => (current_lang() === 'en' ? "Extra pages: $extra" : "Ďalšie podstránky: $extra"), 'price' => $extra * $type['pages']['per_page'], 'from' => false];
+        }
+    }
+    if (!empty($type['products'])) {
+        $p = $cfg['products'][$in['products'] ?? ''] ?? reset($cfg['products']);
+        if ($p['price']) {
+            $items[] = ['label' => pl($p['label']), 'price' => $p['price'], 'from' => false];
+        }
+    }
+
+    $chosen = array_map('strval', (array)($in['features'] ?? []));
+    foreach ($cfg['feature_groups'] as $group) {
+        if (!in_array($typeKey, $group['types'], true)) {
+            continue;
+        }
+        foreach ($group['items'] as $key => $item) {
+            if (in_array($key, $chosen, true)) {
+                $items[] = ['label' => pl($item['label']), 'price' => $item['price'], 'from' => !empty($item['from'])];
+            }
+        }
+    }
+
+    $langs = (int)($in['languages'] ?? 0);
+    if ($langs > 0 && isset($cfg['languages']['options'][$langs])) {
+        $items[] = ['label' => pl($cfg['languages']['options'][$langs]), 'price' => $langs * $cfg['languages']['per'], 'from' => false];
+    }
+
+    $one = array_sum(array_column($items, 'price'));
+    if (!empty($in['express'])) {
+        $surcharge = (int)round($one * $cfg['express']['factor']);
+        $items[] = ['label' => pl($cfg['express']['label']), 'price' => $surcharge, 'from' => false];
+        $one += $surcharge;
+    }
+
+    $care = $cfg['care'][$in['care'] ?? ''] ?? reset($cfg['care']);
+
+    return [
+        'type' => $typeKey,
+        'items' => $items,
+        'min' => (int)(round($one / 10) * 10),
+        'max' => (int)(round($one * $cfg['range_factor'] / 10) * 10),
+        'monthly' => $care['price'],
+        'care_label' => pl($care['label']),
+    ];
 }
 
 /* ---------- CSRF ---------- */
@@ -314,6 +460,8 @@ function icon(string $name, string $class = 'icon'): string
         'clock'       => '<circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 16 14"></polyline>',
         'layers'      => '<polygon points="12 3 21 8 12 13 3 8"></polygon><polyline points="3 13 12 18 21 13"></polyline><polyline points="3 17.5 12 22.5 21 17.5"></polyline>',
         'trending-up' => '<polyline points="3 17 10 10 14 14 21 6"></polyline><polyline points="15 6 21 6 21 12"></polyline>',
+        'search'      => '<circle cx="11" cy="11" r="7"></circle><line x1="16.2" y1="16.2" x2="21" y2="21"></line>',
+        'shield'      => '<path d="M12 3l8 3v6c0 4.6-3.4 8.2-8 9-4.6-.8-8-4.4-8-9V6l8-3z"></path><polyline points="8.5 12 11 14.5 15.5 10"></polyline>',
     ];
     $inner = $paths[$name] ?? $paths['star'];
     return '<svg class="' . h($class) . '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' . $inner . '</svg>';

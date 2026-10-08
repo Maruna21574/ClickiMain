@@ -12,6 +12,9 @@ if ($activeCategory !== 'all' && !in_array($activeCategory, $validSlugs, true)) 
     $activeCategory = 'all';
 }
 $projects = get_projects();
+// vo filtri ukáž len kategórie, ktoré majú aspoň jeden projekt
+$usedSlugs = array_column($projects, 'category_slug');
+$filterCategories = array_filter($categories, fn($c) => in_array($c['slug'], $usedSlugs, true));
 
 require __DIR__ . '/templates/header.php';
 ?>
@@ -29,7 +32,7 @@ require __DIR__ . '/templates/header.php';
   <div class="container">
     <div class="filter-bar" data-filter-bar>
       <button type="button" class="filter-btn<?= $activeCategory === 'all' ? ' is-active' : '' ?>" data-filter="all"><?= h(t('portfolio.filter.all')) ?></button>
-      <?php foreach ($categories as $cat): ?>
+      <?php foreach ($filterCategories as $cat): ?>
       <button type="button" class="filter-btn<?= $activeCategory === $cat['slug'] ? ' is-active' : '' ?>" data-filter="<?= h($cat['slug']) ?>"><?= h(field($cat, 'name')) ?></button>
       <?php endforeach; ?>
     </div>

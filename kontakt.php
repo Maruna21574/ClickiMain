@@ -6,7 +6,7 @@ $pageDesc = t('meta.contact_desc');
 $activeNav = 'contact';
 
 $errors = [];
-$old = ['name' => '', 'email' => '', 'phone' => '', 'budget' => '', 'message' => ''];
+$old = ['name' => '', 'email' => '', 'phone' => '', 'budget' => '', 'website' => '', 'message' => ''];
 $success = isset($_GET['odoslane']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -14,6 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $old['email'] = trim((string)($_POST['email'] ?? ''));
     $old['phone'] = trim((string)($_POST['phone'] ?? ''));
     $old['budget'] = trim((string)($_POST['budget'] ?? ''));
+    $old['website'] = trim((string)($_POST['website'] ?? ''));
     $old['message'] = trim((string)($_POST['message'] ?? ''));
 
     if (!csrf_verify()) {
@@ -28,13 +29,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($old['message'] === '' || mb_strlen($old['message']) < 10) {
         $errors['message'] = true;
     }
+    $website = normalize_url($old['website']);
+    if ($website === null) {
+        $errors['website'] = true;
+    }
 
     if (empty($errors)) {
-        $stmt = db()->prepare('INSERT INTO messages (name, email, phone, budget, message) VALUES (?, ?, ?, ?, ?)');
-        $stmt->execute([$old['name'], $old['email'], $old['phone'], $old['budget'], $old['message']]);
+        $stmt = db()->prepare('INSERT INTO messages (name, email, phone, budget, website, message) VALUES (?, ?, ?, ?, ?, ?)');
+        $stmt->execute([$old['name'], $old['email'], $old['phone'], $old['budget'], $website, $old['message']]);
 
-        $subject = 'Nový dopyt z webu Clicki od ' . $old['name'];
-        $body = "Meno: {$old['name']}\nE-mail: {$old['email']}\nTelefón: {$old['phone']}\nRozpočet: {$old['budget']}\n\nSpráva:\n{$old['message']}\n";
+        $subject = 'Nový dopyt z webu Clicki od ' . str_replace(["\r", "\n"], ' ', $old['name']);
+        $body = "Meno: {$old['name']}\nE-mail: {$old['email']}\nTelefón: {$old['phone']}\nRozpočet: {$old['budget']}\nAktuálny web: " . ($website ?: '—') . "\n\nSpráva:\n{$old['message']}\n";
         $headers = 'From: ' . MAIL_FROM . "\r\nReply-To: " . $old['email'];
         @mail(ADMIN_EMAIL, $subject, $body, $headers);
 
@@ -96,6 +101,11 @@ require __DIR__ . '/templates/header.php';
                 <option value="<?= h(t('contact.form.budget_4')) ?>" <?= $old['budget'] === t('contact.form.budget_4') ? 'selected' : '' ?>><?= h(t('contact.form.budget_4')) ?></option>
               </select>
             </div>
+          </div>
+          <div class="field">
+            <label for="website"><?= h(t('contact.form.website')) ?></label>
+            <input type="text" inputmode="url" id="website" name="website" value="<?= h($old['website']) ?>" placeholder="<?= h(t('contact.form.website_placeholder')) ?>" autocomplete="url">
+            <?php if (!empty($errors['website'])): ?><p class="field-error"><?= h(t('contact.form.website_invalid')) ?></p><?php else: ?><p class="field-hint"><?= h(t('contact.form.website_hint')) ?></p><?php endif; ?>
           </div>
           <div class="field">
             <label for="message"><?= h(t('contact.form.message')) ?> *</label>

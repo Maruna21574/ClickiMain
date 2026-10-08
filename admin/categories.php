@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../inc/functions.php';
 require_login();
 
-$iconOptions = ['code', 'sliders', 'share', 'palette', 'camera', 'drone', 'star', 'layers', 'globe', 'trending-up'];
+$iconOptions = ['code', 'search', 'shield', 'share', 'palette', 'camera', 'star', 'layers', 'globe', 'trending-up'];
 $errors = [];
 $editId = isset($_GET['edit']) ? (int)$_GET['edit'] : 0;
 
