@@ -36,7 +36,7 @@
 .page-hero--video .hero__bg { z-index: 0; opacity: 0.8; }
 .page-hero--video .container { position: relative; z-index: 1; }
 
-.svc-nav { position: sticky; top: 4.1rem; z-index: 90; background: rgba(11, 11, 13, 0.82); backdrop-filter: blur(14px); border-block: 1px solid var(--border); }
+.svc-nav { position: sticky; top: 4.1rem; z-index: 90; background: rgba(11, 11, 13, 0.95); border-block: 1px solid var(--border); }
 .svc-nav__inner { display: flex; gap: 0.5rem; overflow-x: auto; padding-block: 0.7rem; scrollbar-width: none; }
 .svc-nav__inner::-webkit-scrollbar { display: none; }
 .svc-nav__link { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.55rem 1rem; border-radius: var(--radius-pill); border: 1px solid transparent; font-size: var(--fs-sm); font-weight: 500; color: var(--text-dim); white-space: nowrap; transition: color var(--dur-fast), background var(--dur-fast), border-color var(--dur-fast); }
@@ -779,7 +779,7 @@ ul.check-list { margin-bottom: 1.8rem; } /* ul.check-list, aby prebilo reset ul[
 
 /* menu služieb v2: samostatná plávajúca kapsula pod hlavičkou, nie pruh cez celú šírku */
 .svc-nav { top: 5.1rem; background: transparent; backdrop-filter: none; border: 0; box-shadow: none; padding-block: 0.8rem; pointer-events: none; }
-.svc-nav__inner { pointer-events: auto; width: fit-content; max-width: calc(100% - 2rem); margin-inline: auto; padding: 0.4rem; gap: 0.25rem; border-radius: var(--radius-pill); background: rgba(26, 27, 30, 0.92); backdrop-filter: blur(14px); border: 1px solid var(--border-strong); box-shadow: 0 18px 40px -16px rgba(0, 0, 0, 0.9); }
+.svc-nav__inner { pointer-events: auto; width: fit-content; max-width: calc(100% - 2rem); margin-inline: auto; padding: 0.4rem; gap: 0.25rem; border-radius: var(--radius-pill); background: rgba(26, 27, 30, 0.96); border: 1px solid var(--border-strong); box-shadow: 0 18px 40px -16px rgba(0, 0, 0, 0.9); }
 .svc-nav__link { background: transparent; border-color: transparent; }
 .svc-nav__link:hover { background: rgba(255, 255, 255, 0.06); border-color: transparent; }
 .svc-nav__link.is-active { background: var(--pink); border-color: var(--pink); color: #fff; }

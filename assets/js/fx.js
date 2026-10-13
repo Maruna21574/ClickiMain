@@ -485,6 +485,11 @@
     }
 
     function frame(t, last) {
+      // na mobile stačí ~30 fps
+      if (W < 700 && last !== t && t - last < 30) {
+        raf = requestAnimationFrame(function (n2) { frame(n2, last); });
+        return;
+      }
       var dt = Math.min((t - last) / 1000, 0.05);
       ctx.clearRect(0, 0, W, H);
 
@@ -496,16 +501,24 @@
       for (var y = 0; y <= H; y += cell) { ctx.moveTo(0, y + 0.5); ctx.lineTo(W, y + 0.5); }
       ctx.stroke();
 
-      // uzly — pri kurzore sa rozsvietia
+      // uzly: všetky naraz jedným ťahom, rozsvietené pri kurzore zvlášť
+      var hot = [];
+      ctx.fillStyle = 'rgba(255,255,255,0.10)';
+      ctx.beginPath();
       for (var gx = 0; gx <= W; gx += cell) {
         for (var gy = 0; gy <= H; gy += cell) {
           var d = Math.hypot(gx - mouse.x, gy - mouse.y);
-          var k = Math.max(0, 1 - d / 190);
-          ctx.fillStyle = k > 0 ? 'rgba(244,49,130,' + (0.18 + k * 0.7).toFixed(3) + ')' : 'rgba(255,255,255,0.10)';
-          ctx.beginPath();
-          ctx.arc(gx + 0.5, gy + 0.5, 1.4 + k * 2.2, 0, 6.2832);
-          ctx.fill();
+          if (d < 190) { hot.push(gx, gy, 1 - d / 190); continue; }
+          ctx.moveTo(gx + 1.9, gy + 0.5);
+          ctx.arc(gx + 0.5, gy + 0.5, 1.4, 0, 6.2832);
         }
+      }
+      ctx.fill();
+      for (var h = 0; h < hot.length; h += 3) {
+        ctx.fillStyle = 'rgba(244,49,130,' + (0.18 + hot[h + 2] * 0.7).toFixed(3) + ')';
+        ctx.beginPath();
+        ctx.arc(hot[h] + 0.5, hot[h + 1] + 0.5, 1.4 + hot[h + 2] * 2.2, 0, 6.2832);
+        ctx.fill();
       }
 
       // impulzy putujúce po mriežke (na križovatkách občas odbočia)
@@ -536,10 +549,10 @@
           for (var j = from + 1; j <= to; j++) ctx.lineTo(p.trail[j * 2], p.trail[j * 2 + 1]);
           ctx.stroke();
         }
-        ctx.shadowColor = 'rgba(244,49,130,0.9)'; ctx.shadowBlur = 14;
+        ctx.fillStyle = 'rgba(244,49,130,0.22)';
+        ctx.beginPath(); ctx.arc(p.x, p.y, 7, 0, 6.2832); ctx.fill();
         ctx.fillStyle = '#ff7ab6';
         ctx.beginPath(); ctx.arc(p.x, p.y, 2.4, 0, 6.2832); ctx.fill();
-        ctx.shadowBlur = 0;
       });
 
       raf = onScreen && !document.hidden ? requestAnimationFrame(function (n2) { frame(n2, t); }) : 0;

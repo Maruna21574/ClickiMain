@@ -80,8 +80,7 @@
 }
 .site-header.is-scrolled {
   padding-block: 0.7rem;
-  background: rgba(11, 11, 13, 0.82);
-  backdrop-filter: blur(14px) saturate(140%);
+  background: rgba(11, 11, 13, 0.95);
   border-color: var(--border);
 }
 .site-header__inner { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; }
