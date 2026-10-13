@@ -3,10 +3,10 @@
 /* ---------- plynulé prechody medzi stránkami (View Transitions, bez JS) ---------- */
 @view-transition { navigation: auto; }
 .site-header { view-transition-name: site-header; }
-::view-transition-old(root) { animation: fx-vt-out 220ms var(--ease-soft) both; }
-::view-transition-new(root) { animation: fx-vt-in 420ms var(--ease) both; }
-@keyframes fx-vt-out { to { opacity: 0; transform: translateY(-10px); filter: blur(4px); } }
-@keyframes fx-vt-in { from { opacity: 0; transform: translateY(18px); filter: blur(4px); } }
+::view-transition-old(root) { animation: fx-vt-out 140ms linear both; }
+::view-transition-new(root) { animation: fx-vt-in 200ms linear both; }
+@keyframes fx-vt-out { to { opacity: 0; } }
+@keyframes fx-vt-in { from { opacity: 0; } }
 
 /* ---------- ukazovateľ prečítania ---------- */
 .scroll-progress { position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: calc(var(--z-header) + 1); pointer-events: none; }

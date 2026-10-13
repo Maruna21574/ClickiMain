@@ -31,8 +31,8 @@
 
 /* ---------- služby: video v hero + lepiaca navigácia ---------- */
 .page-hero--video { padding-bottom: clamp(4rem, 8vw, 7rem); }
-.page-hero__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; pointer-events: none; filter: brightness(1.35) saturate(1.15); }
-.page-hero__shade { position: absolute; inset: 0; z-index: 0; pointer-events: none; background: linear-gradient(90deg, rgba(11, 11, 13, 0.78) 0%, rgba(11, 11, 13, 0.3) 60%, rgba(11, 11, 13, 0.25) 100%), linear-gradient(180deg, rgba(11, 11, 13, 0.25), var(--bg) 100%); }
+.page-hero__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; pointer-events: none; }
+.page-hero__shade { position: absolute; inset: 0; z-index: 0; pointer-events: none; background: linear-gradient(90deg, rgba(11, 11, 13, 0.62) 0%, rgba(11, 11, 13, 0.16) 60%, rgba(11, 11, 13, 0.12) 100%), linear-gradient(180deg, rgba(11, 11, 13, 0.25), var(--bg) 100%); }
 .page-hero--video .hero__bg { z-index: 0; opacity: 0.8; }
 .page-hero--video .container { position: relative; z-index: 1; }
 
