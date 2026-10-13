@@ -33,6 +33,6 @@ define('LEGAL_ICO', '');
 define('LEGAL_ADDRESS', '');
 
 // Rýchly kontakt (plávajúce tlačidlo, kontaktná stránka, rezervácia hovoru)
-define('CONTACT_PHONE', '+421908347969');
-define('CONTACT_PHONE_DISPLAY', '+421 908 347 969');
-define('CONTACT_WHATSAPP', '421908347969');
+define('CONTACT_PHONE', '+421940391243');
+define('CONTACT_PHONE_DISPLAY', '+421 940 391 243');
+define('CONTACT_WHATSAPP', '421940391243');
