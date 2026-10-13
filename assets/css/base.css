@@ -136,3 +136,8 @@ p.lead { font-size: var(--fs-lg); color: var(--text-dim); }
 }
 [data-reveal].is-visible { opacity: 1; transform: none; }
 .no-js [data-reveal] { opacity: 1; transform: none; }
+
+/* pekné zalamovanie textu (hlavne EN a mobil): nadpisy vyvážene, odseky bez osirotených slov */
+h1, h2, h3, h4, .lead, .btn, figcaption { text-wrap: balance; }
+p, li, label, small, blockquote, summary, .faq-item__q { text-wrap: pretty; }
+h1, h2, h3, h4 { overflow-wrap: break-word; }

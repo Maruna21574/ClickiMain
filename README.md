@@ -1,4 +1,4 @@
-# Clicki — webová prezentácia agentúry
+# Clicki — webová prezentácia
 
 Čisté PHP 8 + vanilla JS, bez Node/build kroku. Databáza je SQLite súbor, ktorý sa vytvorí
 automaticky pri prvom spustení — netreba nič manuálne zakladať.

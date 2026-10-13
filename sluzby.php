@@ -6,6 +6,17 @@ $pageDesc = t('meta.services_desc');
 $activeNav = 'services';
 
 $services = td('services');
+$serviceIcons = [
+    'web' => 'code',
+    'seo' => 'search',
+    'sprava-webu' => 'shield',
+    'socialne-siete' => 'share',
+    'grafika' => 'palette',
+    'foto' => 'camera',
+];
+// video v hero: stačí nahrať assets/video/services.mp4 (voliteľne services-poster.jpg), bez súboru sa nezobrazí
+$heroVideo = is_file(SITE_ROOT . '/assets/video/services.mp4');
+$heroPoster = is_file(SITE_ROOT . '/assets/video/services-poster.jpg') ? '/assets/video/services-poster.jpg' : '';
 
 // obrázky pre vizuály pri službách — berú sa z portfólia, chýbajúce projekty sa preskočia
 $cover = function (string $slug): ?array {
@@ -34,8 +45,15 @@ $media = [
 require __DIR__ . '/templates/header.php';
 ?>
 
-<section class="page-hero">
+<section class="page-hero<?= $heroVideo ? ' page-hero--video' : '' ?>">
+  <?php if ($heroVideo): ?>
+  <video class="page-hero__video" autoplay muted loop playsinline preload="metadata"<?= $heroPoster ? ' poster="' . h($heroPoster) . '"' : '' ?> aria-hidden="true" tabindex="-1">
+    <source src="/assets/video/services.mp4" type="video/mp4">
+  </video>
+  <span class="page-hero__shade" aria-hidden="true"></span>
+  <?php else: ?>
   <span class="hero-glow page-hero__glow"></span>
+  <?php endif; ?>
   <div class="container">
     <p class="eyebrow"><?= h(t('services.hero.eyebrow')) ?></p>
     <h1><?= h(t('services.hero.title')) ?></h1>
@@ -43,31 +61,53 @@ require __DIR__ . '/templates/header.php';
   </div>
 </section>
 
+<nav class="svc-nav" data-svc-nav aria-label="<?= h(t('services.nav')) ?>">
+  <div class="container svc-nav__inner">
+    <?php foreach ($services as $slug => $svc): ?>
+    <a href="#<?= h($slug) ?>" class="svc-nav__link" data-svc-link="<?= h($slug) ?>"><?= icon($serviceIcons[$slug] ?? 'star') ?> <span><?= h($svc['title']) ?></span></a>
+    <?php endforeach; ?>
+  </div>
+</nav>
+
 <div class="container">
-  <?php foreach ($services as $slug => $svc): ?>
+  <?php $svcNo = 0; foreach ($services as $slug => $svc): $svcNo++; ?>
   <section class="service-detail" id="<?= h($slug) ?>">
     <div class="service-detail__grid">
       <div data-reveal>
-        <span class="service-detail__kicker"><?= h($svc['kicker']) ?></span>
+        <span class="service-detail__num" aria-hidden="true"><?= sprintf('%02d', $svcNo) ?></span>
         <h2><?= h($svc['title']) ?></h2>
         <p class="service-detail__lead"><?= h($svc['lead']) ?></p>
 
-        <ul class="check-list">
-          <?php foreach ($svc['bullets'] as $b): ?>
-          <li><?= icon('check') ?> <span><?= h($b) ?></span></li>
-          <?php endforeach; ?>
-        </ul>
-
-        <div class="deliverables-box">
-          <h4><?= h(t('services.deliverables_title')) ?></h4>
-          <ul>
-            <?php foreach ($svc['deliverables'] as $d): ?>
-            <li><?= h($d) ?></li>
-            <?php endforeach; ?>
-          </ul>
+        <div class="svc-tabs" data-svc-tabs>
+          <div class="svc-tabs__bar" role="tablist">
+            <button type="button" role="tab" class="is-active" aria-selected="true"><?= h(t('services.bullets_title')) ?> <b><?= count($svc['bullets']) ?></b></button>
+            <button type="button" role="tab" aria-selected="false"><?= h(t('services.deliverables_title')) ?> <b><?= count($svc['deliverables']) ?></b></button>
+          </div>
+          <div class="svc-tabs__panels">
+            <div class="svc-tabs__panel is-active" role="tabpanel">
+              <h4 class="svc-tabs__h"><?= h(t('services.bullets_title')) ?></h4>
+              <ul class="check-list">
+                <?php foreach ($svc['bullets'] as $b): ?>
+                <li><?= icon('check') ?> <span><?= h($b) ?></span></li>
+                <?php endforeach; ?>
+              </ul>
+            </div>
+            <div class="svc-tabs__panel" role="tabpanel">
+              <h4 class="svc-tabs__h"><?= h(t('services.deliverables_title')) ?></h4>
+              <ul class="svc-deliver">
+                <?php foreach ($svc['deliverables'] as $d): ?>
+                <li><?= h($d) ?></li>
+                <?php endforeach; ?>
+              </ul>
+            </div>
+          </div>
         </div>
 
-        <a href="/kontakt.php" class="btn btn--primary"><?= icon('arrow-right') ?> <?= h(t('services.cta')) ?></a>
+        <div class="service-detail__actions">
+          <a href="/kontakt.php" class="btn btn--primary"><?= h(t('services.cta')) ?> <?= icon('arrow-right') ?></a>
+          <?php $lpMap = ['web' => 'tvorba-webstranok', 'seo' => 'seo-optimalizacia', 'sprava-webu' => 'sprava-webu', 'socialne-siete' => 'socialne-siete', 'grafika' => 'graficky-dizajn', 'foto' => 'svadobna-fotografia']; ?>
+          <?php if (isset($lpMap[$slug])): ?><a href="/<?= h($lpMap[$slug]) ?>" class="btn btn--ghost"><?= h(landing_pages()[$lpMap[$slug]]['nav']) ?> <?= icon('arrow-right') ?></a><?php endif; ?>
+        </div>
       </div>
 
       <div class="service-detail__visual" data-reveal>
@@ -78,33 +118,6 @@ require __DIR__ . '/templates/header.php';
   <?php endforeach; ?>
 </div>
 
-<section class="section">
-  <div class="container">
-    <div class="section-head section-head--center" data-reveal>
-      <p class="eyebrow" style="justify-content:center"><?= h(t('services.tiers.eyebrow')) ?></p>
-      <h2><?= h(t('services.tiers.title')) ?></h2>
-      <p class="lead" style="margin-inline:auto;margin-top:1rem;"><?= h(t('services.tiers.subtitle')) ?></p>
-    </div>
-    <div class="grid tiers-grid" data-reveal>
-      <?php foreach (td('tiers') as $i => $tier): ?>
-      <div class="card tier-card">
-        <span class="tier-card__tag">0<?= $i + 1 ?></span>
-        <h3><?= h($tier['title']) ?></h3>
-        <p><?= h($tier['desc']) ?></p>
-      </div>
-      <?php endforeach; ?>
-    </div>
-  </div>
-</section>
-
-<section class="section section--alt">
-  <div class="container">
-    <div class="cta-band" data-reveal>
-      <h2><?= h(t('cta.title')) ?></h2>
-      <p><?= h(t('cta.subtitle')) ?></p>
-      <a href="/kontakt.php" class="btn btn--primary"><?= icon('arrow-right') ?> <?= h(t('cta.button')) ?></a>
-    </div>
-  </div>
-</section>
+<?php require __DIR__ . '/templates/cta-band.php'; ?>
 
 <?php require __DIR__ . '/templates/footer.php'; ?>

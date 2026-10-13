@@ -21,7 +21,7 @@ $data = $project ?: [
     'category_id' => $categories[0]['id'] ?? 0,
     'slug' => '', 'title_sk' => '', 'title_en' => '',
     'summary_sk' => '', 'summary_en' => '', 'description_sk' => '', 'description_en' => '',
-    'client' => '', 'year' => date('Y'), 'featured' => 0, 'sort_order' => 0, 'cover_image' => '', 'live_url' => '',
+    'client' => '', 'year' => date('Y'), 'featured' => 0, 'sort_order' => 0, 'cover_image' => '', 'live_url' => '', 'tags_sk' => '', 'tags_en' => '',
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -39,6 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data['client'] = trim((string)($_POST['client'] ?? ''));
     $data['year'] = trim((string)($_POST['year'] ?? ''));
     $data['live_url'] = trim((string)($_POST['live_url'] ?? ''));
+    $data['tags_sk'] = trim((string)($_POST['tags_sk'] ?? ''));
+    $data['tags_en'] = trim((string)($_POST['tags_en'] ?? ''));
     $data['featured'] = isset($_POST['featured']) ? 1 : 0;
     $data['sort_order'] = (int)($_POST['sort_order'] ?? 0);
 
@@ -74,20 +76,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($isEdit) {
             $sql = 'UPDATE projects SET category_id=?, slug=?, title_sk=?, title_en=?, summary_sk=?, summary_en=?,
-                    description_sk=?, description_en=?, client=?, year=?, live_url=?, cover_image=?, featured=?, sort_order=? WHERE id=?';
+                    description_sk=?, description_en=?, client=?, year=?, live_url=?, tags_sk=?, tags_en=?, cover_image=?, featured=?, sort_order=? WHERE id=?';
             db()->prepare($sql)->execute([
                 $data['category_id'], $data['slug'], $data['title_sk'], $data['title_en'],
                 $data['summary_sk'], $data['summary_en'], $data['description_sk'], $data['description_en'],
-                $data['client'], $data['year'], $data['live_url'], $data['cover_image'], $data['featured'], $data['sort_order'], $id,
+                $data['client'], $data['year'], $data['live_url'], $data['tags_sk'], $data['tags_en'], $data['cover_image'], $data['featured'], $data['sort_order'], $id,
             ]);
         } else {
             $sql = 'INSERT INTO projects (category_id, slug, title_sk, title_en, summary_sk, summary_en,
-                    description_sk, description_en, client, year, live_url, cover_image, featured, sort_order)
-                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
+                    description_sk, description_en, client, year, live_url, tags_sk, tags_en, cover_image, featured, sort_order)
+                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
             db()->prepare($sql)->execute([
                 $data['category_id'], $data['slug'], $data['title_sk'], $data['title_en'],
                 $data['summary_sk'], $data['summary_en'], $data['description_sk'], $data['description_en'],
-                $data['client'], $data['year'], $data['live_url'], $data['cover_image'], $data['featured'], $data['sort_order'],
+                $data['client'], $data['year'], $data['live_url'], $data['tags_sk'], $data['tags_en'], $data['cover_image'], $data['featured'], $data['sort_order'],
             ]);
             $id = (int)db()->lastInsertId();
         }
@@ -194,6 +196,17 @@ require __DIR__ . '/../templates/admin-header.php';
     <div class="field">
       <label>Live ukážka (URL webu, nepovinné)</label>
       <input type="text" inputmode="url" name="live_url" value="<?= h($data['live_url'] ?? '') ?>" placeholder="https://www.priklad.sk">
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Čo sme urobili — štítky (SK, oddeľte čiarkou)</label>
+        <input type="text" name="tags_sk" value="<?= h($data['tags_sk'] ?? '') ?>" placeholder="Návrh dizajnu, Web na mieru, SEO">
+      </div>
+      <div class="field">
+        <label>Čo sme urobili — štítky (EN, comma separated)</label>
+        <input type="text" name="tags_en" value="<?= h($data['tags_en'] ?? '') ?>" placeholder="Design, Custom website, SEO">
+      </div>
     </div>
 
     <div class="field-row">

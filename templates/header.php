@@ -18,11 +18,55 @@ $bodyClass = $bodyClass ?? '';
 <meta name="description" content="<?= h($pageDesc) ?>">
 <meta property="og:title" content="<?= h($pageTitle) ?>">
 <meta property="og:description" content="<?= h($pageDesc) ?>">
-<meta property="og:type" content="website">
-<meta property="og:image" content="/assets/img/favicon_clicki.png">
+<?php
+$canonical = $canonical ?? canonical_url();
+$ogImg = $ogImage ?? '/assets/img/og-clicki.jpg';
+if (!preg_match('#^https?://#', $ogImg)) { $ogImg = site_url($ogImg); }
+?>
+<link rel="canonical" href="<?= h($canonical) ?>">
+<?php if (!empty($noindex)): ?><meta name="robots" content="noindex, follow">
+<?php else: ?><meta name="robots" content="index, follow, max-image-preview:large"><?php endif; ?>
+
+<meta property="og:type" content="<?= h($ogType ?? 'website') ?>">
+<meta property="og:url" content="<?= h($canonical) ?>">
+<meta property="og:site_name" content="Clicki">
+<meta property="og:locale" content="sk_SK">
+<meta property="og:image" content="<?= h($ogImg) ?>">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="<?= h($pageTitle) ?>">
+<meta name="twitter:description" content="<?= h($pageDesc) ?>">
+<meta name="twitter:image" content="<?= h($ogImg) ?>">
+<script type="application/ld+json"><?= json_encode([
+    '@context' => 'https://schema.org',
+    '@graph' => [
+        [
+            '@type' => 'Organization',
+            '@id' => site_url('/#organization'),
+            'name' => 'Clicki',
+            'url' => site_url('/'),
+            'logo' => site_url('/assets/img/clicki_logo_white.png'),
+            'email' => ADMIN_EMAIL,
+            'telephone' => CONTACT_PHONE,
+            'contactPoint' => [['@type' => 'ContactPoint', 'telephone' => CONTACT_PHONE, 'contactType' => 'customer service', 'availableLanguage' => ['sk', 'en']]],
+            'areaServed' => 'SK',
+            'description' => t('meta.home_desc'),
+        ],
+        [
+            '@type' => 'WebSite',
+            '@id' => site_url('/#website'),
+            'url' => site_url('/'),
+            'name' => 'Clicki',
+            'inLanguage' => 'sk',
+            'publisher' => ['@id' => site_url('/#organization')],
+        ],
+    ],
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) ?></script>
+<?php if (!empty($headExtra)) echo $headExtra; ?>
 <meta name="theme-color" content="#0B0B0D">
-<link rel="icon" href="/assets/img/clicki_favicon_small.png" type="image/png">
-<link rel="apple-touch-icon" href="/assets/img/favicon_clicki.png">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/img/favicon-192.png">
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

@@ -72,6 +72,15 @@
   lightbox.addEventListener('click', function (e) {
     if (e.target === lightbox) close();
   });
+  // mobil: potiahnutie prstom doľava/doprava prepína fotky
+  var touchX = null;
+  lightbox.addEventListener('touchstart', function (e) { touchX = e.touches[0].clientX; }, { passive: true });
+  lightbox.addEventListener('touchend', function (e) {
+    if (touchX === null) return;
+    var dx = e.changedTouches[0].clientX - touchX;
+    touchX = null;
+    if (Math.abs(dx) > 50) step(dx < 0 ? 1 : -1);
+  }, { passive: true });
   document.addEventListener('keydown', function (e) {
     if (!lightbox.classList.contains('is-open')) return;
     if (e.key === 'Escape') close();

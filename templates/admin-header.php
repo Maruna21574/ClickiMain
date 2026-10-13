@@ -9,7 +9,8 @@ $adminActive = $adminActive ?? '';
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title><?= h($pageTitle ?? 'Admin — Clicki') ?></title>
 <meta name="robots" content="noindex, nofollow">
-<link rel="icon" href="/assets/img/clicki_favicon_small.png" type="image/png">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/tokens.css">
 <link rel="stylesheet" href="/assets/css/base.css">
@@ -22,7 +23,9 @@ $adminActive = $adminActive ?? '';
     <div class="brand"><img src="/assets/img/clicki_logo_white.png" alt="Clicki"></div>
     <nav class="admin-nav">
       <a href="/admin/index.php" class="<?= $adminActive === 'dashboard' ? 'is-active' : '' ?>"><?= icon('layers') ?> Projekty</a>
+      <a href="/admin/blog.php" class="<?= $adminActive === 'blog' ? 'is-active' : '' ?>"><?= icon('layers') ?> Blog</a>
       <a href="/admin/categories.php" class="<?= $adminActive === 'categories' ? 'is-active' : '' ?>"><?= icon('sliders') ?> Kategórie</a>
+      <a href="/admin/bookings.php" class="<?= $adminActive === 'bookings' ? 'is-active' : '' ?>"><?= icon('clock') ?> Rezervácie</a>
       <a href="/admin/messages.php" class="<?= $adminActive === 'messages' ? 'is-active' : '' ?>"><?= icon('mail') ?> Správy</a>
       <a href="/admin/settings.php" class="<?= $adminActive === 'settings' ? 'is-active' : '' ?>"><?= icon('check') ?> Nastavenia</a>
       <a href="/" target="_blank"><?= icon('arrow-up-right') ?> Zobraziť web</a>

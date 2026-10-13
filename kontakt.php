@@ -19,6 +19,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!csrf_verify()) {
         $errors[] = t('contact.form.error');
+    } else {
+        $spam = spam_check('kontakt', [$old['name'], $old['message'], $old['website'], $old['phone']]);
+        if ($spam === 'silent') {
+            redirect('/kontakt.php?odoslane=1'); // roboty: tvárime sa, že prešlo
+        }
+        if ($spam === 'limit') {
+            $errors[] = t('contact.form.too_many');
+        }
     }
     if ($old['name'] === '') {
         $errors['name'] = true;
@@ -33,6 +41,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($website === null) {
         $errors['website'] = true;
     }
+    if (empty($_POST['consent'])) {
+        $errors['consent'] = true;
+    }
 
     if (empty($errors)) {
         $stmt = db()->prepare('INSERT INTO messages (name, email, phone, budget, website, message) VALUES (?, ?, ?, ?, ?, ?)');
@@ -43,15 +54,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $headers = 'From: ' . MAIL_FROM . "\r\nReply-To: " . $old['email'];
         @mail(ADMIN_EMAIL, $subject, $body, $headers);
 
+        spam_done('kontakt');
         redirect('/kontakt.php?odoslane=1');
     }
 }
 
+$heroVideoName = 'contact';
+require __DIR__ . '/templates/hero-video.php';
 require __DIR__ . '/templates/header.php';
 ?>
 
-<section class="page-hero">
+<section class="page-hero<?= $heroHasVideo ? ' page-hero--video' : '' ?>">
+  <?php if ($heroHasVideo): require __DIR__ . '/templates/hero-video-media.php'; else: ?>
   <span class="hero-glow page-hero__glow"></span>
+  <?php endif; ?>
   <div class="container">
     <p class="eyebrow"><?= h(t('contact.hero.eyebrow')) ?></p>
     <h1><?= h(t('contact.hero.title')) ?></h1>
@@ -74,6 +90,7 @@ require __DIR__ . '/templates/header.php';
 
         <form method="post" action="/kontakt.php" novalidate>
           <?= csrf_field() ?>
+          <?= spam_fields('kontakt') ?>
           <div class="field-row">
             <div class="field">
               <label for="name"><?= h(t('contact.form.name')) ?> *</label>
@@ -112,10 +129,10 @@ require __DIR__ . '/templates/header.php';
             <textarea id="message" name="message" placeholder="<?= h(t('contact.form.message_placeholder')) ?>" required><?= h($old['message']) ?></textarea>
             <?php if (!empty($errors['message'])): ?><p class="field-error"><?= h(t('contact.form.validation')) ?></p><?php endif; ?>
           </div>
-          <button type="submit" class="btn btn--primary btn--block"><?= icon('arrow-right') ?> <?= h(t('contact.form.submit')) ?></button>
+          <?php $consentChecked = !empty($_POST['consent']); $consentError = !empty($errors['consent']); require __DIR__ . '/templates/consent-field.php'; ?>
+          <button type="submit" class="btn btn--primary btn--block"><?= h(t('contact.form.submit')) ?> <?= icon('arrow-right') ?></button>
         </form>
       </div>
-
       <div class="card contact-info-card" data-reveal>
         <h3 style="font-size:var(--fs-lg);margin-bottom:.5rem;"><?= h(t('contact.info.title')) ?></h3>
         <div class="contact-info-row">
@@ -124,7 +141,7 @@ require __DIR__ . '/templates/header.php';
         </div>
         <div class="contact-info-row">
           <?= icon('phone') ?>
-          <div><h4><?= h(t('contact.info.phone_label')) ?></h4><a href="tel:+421900000000">+421 900 000 000</a></div>
+          <div><h4><?= h(t('contact.info.phone_label')) ?></h4><a href="tel:<?= h(CONTACT_PHONE) ?>"><?= h(CONTACT_PHONE_DISPLAY) ?></a></div>
         </div>
         <div class="contact-info-row">
           <?= icon('map-pin') ?>
@@ -134,6 +151,12 @@ require __DIR__ . '/templates/header.php';
           <?= icon('clock') ?>
           <div><h4><?= h(t('contact.info.response_label')) ?></h4><p><?= h(t('contact.info.response_value')) ?></p></div>
         </div>
+        <div class="contact-info-row" style="flex-wrap:wrap;gap:.6rem;">
+          <a href="/konzultacia" class="btn btn--primary btn--sm"><?= icon('calendar') ?> <?= h(t('fab.book')) ?></a>
+          <a href="https://wa.me/<?= h(CONTACT_WHATSAPP) ?>" target="_blank" rel="noopener" class="btn btn--ghost btn--sm"><?= icon('whatsapp') ?> WhatsApp</a>
+        </div>
+      </div>
+
       </div>
     </div>
   </div>

@@ -11,6 +11,8 @@ $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!csrf_verify()) {
         $error = 'Neplatná relácia, skúste znova.';
+    } elseif (!$isSetup && login_blocked()) {
+        $error = 'Príliš veľa neúspešných pokusov. Skúste to znova o 15 minút.';
     } elseif ($isSetup) {
         $username = trim((string)($_POST['username'] ?? ''));
         $password = (string)($_POST['password'] ?? '');
@@ -34,6 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (attempt_login($username, $password)) {
             redirect('/admin/index.php');
         }
+        login_failed();
         $error = 'Nesprávne prihlasovacie meno alebo heslo.';
     }
 }

@@ -33,12 +33,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $old[$k] = trim((string)($_POST[$k] ?? ''));
     }
 
-    // honeypot — roboty vyplnia aj skryté pole; tvárime sa, že je všetko OK
-    if (!empty($_POST['nickname'])) {
-        redirect('/ponuka.php?odoslane=1');
-    }
     if (!csrf_verify()) {
         $errors['form'] = t('contact.form.error');
+    } else {
+        // honeypot, časová pasca, limit odoslaní a filter obsahu (inc/antispam.php)
+        $spam = spam_check('ponuka', [$old['name'], $old['note'], $old['website'], $old['phone']]);
+        if ($spam === 'silent') {
+            redirect('/ponuka.php?odoslane=1');
+        }
+        if ($spam === 'limit') {
+            $errors['form'] = t('contact.form.too_many');
+        }
     }
     if ($old['name'] === '') {
         $errors['name'] = true;
@@ -49,6 +54,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $website = normalize_url($old['website']);
     if ($website === null) {
         $errors['website'] = true;
+    }
+    if (empty($_POST['consent'])) {
+        $errors['consent'] = true;
     }
 
     if (!$errors) {
@@ -80,6 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $body = "Meno: {$old['name']}\nE-mail: {$old['email']}\nTelefón: {$old['phone']}\nAktuálny web: " . ($website ?: '—') . "\n\n$message\n";
         @mail(ADMIN_EMAIL, 'Nový dopyt z konfigurátora Clicki od ' . $name, $body, 'From: ' . MAIL_FROM . "\r\nReply-To: " . $old['email']);
 
+        spam_done('ponuka');
         redirect('/ponuka.php?odoslane=1#quote-contact');
     }
 }
@@ -114,7 +123,7 @@ require __DIR__ . '/templates/header.php';
   <div class="container">
     <form method="post" action="/ponuka.php#quote-contact" class="quote" id="quote-form" novalidate>
       <?= csrf_field() ?>
-      <div class="quote__hp" aria-hidden="true"><label>Nickname <input type="text" name="nickname" tabindex="-1" autocomplete="off"></label></div>
+      <?= spam_fields('ponuka') ?>
 
       <div class="quote__layout">
         <div class="quote__steps">
@@ -252,7 +261,8 @@ require __DIR__ . '/templates/header.php';
               <label for="q-note"><?= h(t('quote.form.note')) ?></label>
               <textarea id="q-note" name="note" placeholder="<?= h(t('quote.form.note_placeholder')) ?>"><?= h($old['note']) ?></textarea>
             </div>
-            <button type="submit" class="btn btn--primary btn--block"><?= icon('arrow-right') ?> <?= h(t('quote.form.submit')) ?></button>
+            <?php $consentChecked = !empty($_POST['consent']); $consentError = !empty($errors['consent']); require __DIR__ . '/templates/consent-field.php'; ?>
+            <button type="submit" class="btn btn--primary btn--block"><?= h(t('quote.form.submit')) ?> <?= icon('arrow-right') ?></button>
           </div>
         </div>
 
@@ -264,7 +274,7 @@ require __DIR__ . '/templates/header.php';
               <li><?= icon('check') ?><span><?= h($label) ?></span></li>
               <?php endforeach; ?>
             </ul>
-            <a href="#quote-contact" class="btn btn--primary btn--block"><?= icon('arrow-right') ?> <?= h(t('quote.summary.cta')) ?></a>
+            <a href="#quote-contact" class="btn btn--primary btn--block"><?= h(t('quote.summary.cta')) ?> <?= icon('arrow-right') ?></a>
             <p class="quote-summary__note"><?= h(pl($cfg['note'])) ?></p>
           </div>
         </aside>

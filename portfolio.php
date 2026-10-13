@@ -16,11 +16,15 @@ $projects = get_projects();
 $usedSlugs = array_column($projects, 'category_slug');
 $filterCategories = array_filter($categories, fn($c) => in_array($c['slug'], $usedSlugs, true));
 
+$heroVideoName = 'portfolio';
+require __DIR__ . '/templates/hero-video.php';
 require __DIR__ . '/templates/header.php';
 ?>
 
-<section class="page-hero">
+<section class="page-hero<?= $heroHasVideo ? ' page-hero--video' : '' ?>">
+  <?php if ($heroHasVideo): require __DIR__ . '/templates/hero-video-media.php'; else: ?>
   <span class="hero-glow page-hero__glow"></span>
+  <?php endif; ?>
   <div class="container">
     <p class="eyebrow"><?= h(t('portfolio.hero.eyebrow')) ?></p>
     <h1><?= h(t('portfolio.hero.title')) ?></h1>
@@ -41,14 +45,8 @@ require __DIR__ . '/templates/header.php';
       <?php foreach ($projects as $p):
           $hidden = ($activeCategory !== 'all' && $p['category_slug'] !== $activeCategory);
       ?>
-      <a href="/projekt.php?slug=<?= urlencode($p['slug']) ?>" class="project-card" data-category="<?= h($p['category_slug']) ?>" <?= $hidden ? 'style="display:none;"' : '' ?>>
-        <div class="project-card__media"><img src="<?= h(cover_image($p)) ?>" alt="<?= h(field($p, 'title')) ?>" loading="lazy"></div>
-        <div class="project-card__body">
-          <span class="project-card__cat"><?= h(cat_name($p)) ?></span>
-          <h3 class="project-card__title"><?= h(field($p, 'title')) ?></h3>
-          <div class="project-card__meta"><span><?= h($p['client']) ?></span><span><?= h($p['year']) ?></span></div>
-        </div>
-      </a>
+      <?php $cardAttr = 'data-category="' . h($p['category_slug']) . '"' . ($hidden ? ' style="display:none;"' : '');
+            require __DIR__ . '/templates/project-card.php'; ?>
       <?php endforeach; ?>
     </div>
 

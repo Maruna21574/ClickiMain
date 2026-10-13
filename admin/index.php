@@ -13,7 +13,7 @@ require __DIR__ . '/../templates/admin-header.php';
 
 <div class="admin-topbar">
   <h1>Projekty</h1>
-  <a href="/admin/project-form.php" class="btn btn--primary btn--sm"><?= icon('arrow-right') ?> Nový projekt</a>
+  <a href="/admin/project-form.php" class="btn btn--primary btn--sm">Nový projekt <?= icon('arrow-right') ?></a>
 </div>
 
 <div class="grid admin-stats">

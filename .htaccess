@@ -24,3 +24,15 @@ ErrorDocument 404 /404.php
     ExpiresByType text/css "access plus 1 month"
     ExpiresByType application/javascript "access plus 1 month"
 </IfModule>
+
+# SEO: pekné adresy vstupných stránok, robots.txt a sitemap.xml
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # jedna adresa pre úvodnú stránku (kvôli SEO bez duplicít)
+    RewriteCond %{THE_REQUEST} \s/index\.php[\s?]
+    RewriteRule ^index\.php$ / [R=301,L]
+    RewriteRule ^robots\.txt$ robots.php [L]
+    RewriteRule ^sitemap\.xml$ sitemap.php [L]
+    RewriteRule ^konzultacia/?$ rezervacia.php [L,QSA]
+    RewriteRule ^(tvorba-webstranok|web-na-mieru|tvorba-eshopov|svadobna-fotografia|seo-optimalizacia|sprava-webu|zrychlenie-webu|redizajn-webu|tvorba-webovych-aplikacii|socialne-siete|graficky-dizajn|portretna-fotografia|rodinna-fotografia)/?$ landing.php?slug= [L,QSA]
+</IfModule>

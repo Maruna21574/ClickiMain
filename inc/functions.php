@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/antispam.php';
+require_once __DIR__ . '/booking.php';
 
 /* ---------- output / escaping ---------- */
 
@@ -422,6 +424,218 @@ function get_project_by_slug(string $slug): ?array
     return $row ?: null;
 }
 
+/** Právne texty (ochrana osobných údajov, cookies) v aktuálnom jazyku. */
+function legal_content(string $page): array
+{
+    static $dict = [];
+    $lang = current_lang();
+    if (!isset($dict[$lang])) {
+        $file = __DIR__ . '/i18n/legal_' . $lang . '.php';
+        $dict[$lang] = is_file($file) ? require $file : [];
+    }
+    return $dict[$lang][$page] ?? [];
+}
+
+/** Rovnaké inline formátovanie ako v blogu: **tučné** v escapovanom texte. */
+function legal_inline(string $s): string
+{
+    return preg_replace('/\*\*(.+?)\*\*/u', '<strong>$1</strong>', h($s));
+}
+
+/* ---------- SEO ---------- */
+
+/** Absolútna adresa webu (https podľa požiadavky), bez koncového lomítka. */
+function site_base(): string
+{
+    $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+        || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
+    return ($https ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost');
+}
+
+function site_url(string $path = '/'): string
+{
+    return site_base() . '/' . ltrim($path, '/');
+}
+
+/** Kanonická adresa aktuálnej stránky: bez jazykového parametra a bez zbytočných query parametrov. */
+function canonical_url(): string
+{
+    $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+    $path = preg_replace('#/index\.php$#', '/', $path);
+    $keep = [];
+    foreach (['slug'] as $k) {
+        if (isset($_GET[$k]) && is_string($_GET[$k]) && $_GET[$k] !== '') {
+            $keep[$k] = $_GET[$k];
+        }
+    }
+    return site_base() . $path . ($keep ? '?' . http_build_query($keep) : '');
+}
+
+/** Vstupné SEO stránky (inc/landing.php). */
+function landing_pages(): array
+{
+    static $pages = null;
+    if ($pages === null) {
+        $pages = array_merge(require __DIR__ . '/landing.php', require __DIR__ . '/landing_more.php');
+    }
+    return $pages;
+}
+
+/* ---------- blog ---------- */
+
+/** Zverejnené články, najnovšie prvé. */
+function get_posts(?int $limit = null, ?int $excludeId = null): array
+{
+    $sql = "SELECT * FROM posts WHERE is_published = 1 AND published_at <= date('now')";
+    $params = [];
+    if ($excludeId) {
+        $sql .= ' AND id != ?';
+        $params[] = $excludeId;
+    }
+    $sql .= ' ORDER BY published_at DESC, id DESC';
+    if ($limit) {
+        $sql .= ' LIMIT ' . (int)$limit;
+    }
+    $stmt = db()->prepare($sql);
+    $stmt->execute($params);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function get_post_by_slug(string $slug, bool $includeDrafts = false): ?array
+{
+    $sql = 'SELECT * FROM posts WHERE slug = ?' . ($includeDrafts ? '' : " AND is_published = 1 AND published_at <= date('now')");
+    $stmt = db()->prepare($sql);
+    $stmt->execute([$slug]);
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $row ?: null;
+}
+
+/** Text článku v aktuálnom jazyku; ak chýba EN verzia, použije sa slovenská. */
+function post_text(array $post, string $base): string
+{
+    $val = trim((string)($post[$base . '_' . current_lang()] ?? ''));
+    return $val !== '' ? $val : (string)($post[$base . '_sk'] ?? '');
+}
+
+/** Obrázok článku; bez nahratej fotky sa použije generovaný placeholder podľa témy. */
+function post_cover(array $post): string
+{
+    if (!empty($post['cover_image'])) {
+        return $post['cover_image'];
+    }
+    $cat = in_array($post['topic'], ['web', 'socialne-siete', 'grafika', 'foto'], true) ? $post['topic'] : 'web';
+    return '/assets/img/placeholder.php?title=' . urlencode(post_text($post, 'title')) . '&cat=' . urlencode($cat) . '&seed=' . urlencode($post['slug']);
+}
+
+/** Odhad času čítania v minútach (cca 200 slov za minútu). */
+function reading_minutes(string $text): int
+{
+    return max(1, (int)ceil(str_word_count(strip_tags($text), 0, 'áäčďéíĺľňóôŕšťúýžÁÄČĎÉÍĹĽŇÓÔŔŠŤÚÝŽ') / 200));
+}
+
+/**
+ * Jednoduchý formát článku (výstup je vždy escapovaný):
+ *   prázdny riadok = nový odsek      "## " / "### " = nadpis
+ *   "- " / "1. " = zoznam            "> " = zvýraznený citát / tip
+ *   "![popis](/cesta/obrazok.jpg)" = obrázok s popiskom
+ *   "[[projekt:slug]]" = karta projektu z portfólia
+ *   **tučné**, *kurzíva*
+ * $toc sa naplní zoznamom nadpisov sekcií [['id' => ..., 'title' => ...]] pre obsah článku.
+ */
+function render_post_body(string $text, ?array &$toc = null): string
+{
+    $toc = [];
+    $usedIds = [];
+    $inline = function (string $s): string {
+        $s = h($s);
+        $s = preg_replace('/\*\*(.+?)\*\*/u', '<strong>$1</strong>', $s);
+        return preg_replace('/(?<!\*)\*(?!\s)(.+?)(?<!\s)\*(?!\*)/u', '<em>$1</em>', $s);
+    };
+    $out = '';
+    $blocks = preg_split('/\R{2,}/u', trim(str_replace("\r\n", "\n", $text))) ?: [];
+    foreach ($blocks as $block) {
+        $block = trim($block);
+        if ($block === '') {
+            continue;
+        }
+        if (str_starts_with($block, '## ')) {
+            $title = trim(substr($block, 3));
+            $id = slugify($title) ?: 'sekcia';
+            $base = $id;
+            for ($n = 2; isset($usedIds[$id]); $n++) {
+                $id = $base . '-' . $n;
+            }
+            $usedIds[$id] = true;
+            $toc[] = ['id' => $id, 'title' => $title];
+            $out .= '<h2 id="' . h($id) . '">' . $inline($title) . "</h2>\n";
+            continue;
+        }
+        if (str_starts_with($block, '### ')) {
+            $out .= '<h3>' . $inline(substr($block, 4)) . "</h3>\n";
+            continue;
+        }
+        if (preg_match('/^!\[(.*?)\]\((\/[^)\s]+|https?:\/\/[^)\s]+)\)$/u', $block, $m)) {
+            $out .= '<figure class="post-figure"><img src="' . h($m[2]) . '" alt="' . h($m[1]) . '" loading="lazy">'
+                . ($m[1] !== '' ? '<figcaption>' . h($m[1]) . '</figcaption>' : '') . "</figure>\n";
+            continue;
+        }
+        if (preg_match('/^\[\[projekt:([a-z0-9-]+)\]\]$/', $block, $m)) {
+            $p = get_project_by_slug($m[1]);
+            if ($p) {
+                $out .= '<a class="post-embed" href="/projekt.php?slug=' . urlencode($p['slug']) . '">'
+                    . '<img src="' . h(cover_image($p)) . '" alt="" loading="lazy">'
+                    . '<span class="post-embed__text"><small>' . h(t('blog.embed_label')) . '</small>'
+                    . '<strong>' . h(field($p, 'title')) . '</strong>'
+                    . '<em>' . h(t('blog.embed_view')) . '</em></span></a>' . "\n";
+            }
+            continue;
+        }
+        if (str_starts_with($block, '> ')) {
+            $quote = implode(' ', array_map(fn($l) => ltrim(preg_replace('/^>\s?/', '', $l)), explode("\n", $block)));
+            $out .= '<blockquote class="post-callout"><p>' . $inline($quote) . "</p></blockquote>\n";
+            continue;
+        }
+        $lines = preg_split('/\n/u', $block) ?: [];
+        $isUl = count(array_filter($lines, fn($l) => str_starts_with(ltrim($l), '- '))) === count($lines);
+        $isOl = count(array_filter($lines, fn($l) => preg_match('/^\s*\d+\.\s/u', $l))) === count($lines);
+        if ($isUl || $isOl) {
+            $items = '';
+            foreach ($lines as $l) {
+                $items .= '<li>' . $inline($isUl ? substr(ltrim($l), 2) : preg_replace('/^\s*\d+\.\s/u', '', $l)) . '</li>';
+            }
+            $out .= ($isUl ? "<ul>$items</ul>" : "<ol>$items</ol>") . "\n";
+            continue;
+        }
+        $out .= '<p>' . $inline(implode(' ', array_map('trim', $lines))) . "</p>\n";
+    }
+    return $out;
+}
+
+/**
+ * Rozpozná obrázok typu "mobilný náhľad" (telefón na tmavom ružovom gradiente) podľa farby po okrajoch.
+ * Takéto obrázky sa na detaile projektu nezobrazujú v okne prehliadača, ale vo vlastnom bloku.
+ */
+function is_mobile_mockup(string $file): bool
+{
+    if (!is_file($file) || !function_exists('imagecreatefromstring')) {
+        return false;
+    }
+    $im = @imagecreatefromstring((string)file_get_contents($file));
+    if (!$im) {
+        return false;
+    }
+    $w = imagesx($im);
+    $h = imagesy($im);
+    $px = function (float $x, float $y) use ($im, $w, $h): array {
+        $c = imagecolorat($im, (int)($x * ($w - 1)), (int)($y * ($h - 1)));
+        return [($c >> 16) & 255, ($c >> 8) & 255, $c & 255];
+    };
+    $near = fn(array $a, array $b, int $tol) => abs($a[0] - $b[0]) <= $tol && abs($a[1] - $b[1]) <= $tol && abs($a[2] - $b[2]) <= $tol;
+    $ok = $near($px(0.03, 0.5), [11, 11, 13], 10) && $near($px(0.97, 0.5), [42, 16, 29], 14);
+    imagedestroy($im);
+    return $ok;
+}
+
 function get_project_images(int $projectId): array
 {
     $stmt = db()->prepare('SELECT * FROM project_images WHERE project_id = ? ORDER BY sort_order ASC');
@@ -446,6 +660,8 @@ function icon(string $name, string $class = 'icon'): string
         'menu'        => '<line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line>',
         'x'           => '<line x1="5" y1="5" x2="19" y2="19"></line><line x1="19" y1="5" x2="5" y2="19"></line>',
         'mail'        => '<rect x="3" y="5" width="18" height="14" rx="2"></rect><polyline points="3 7 12 13 21 7"></polyline>',
+        'whatsapp'    => '<path d="M3 21l1.7-5A8.5 8.5 0 1 1 8 19.3L3 21z"></path><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5l1-1.5-2-1-.8.8a4 4 0 0 1-2-2l.8-.8-1-2L9 9.5z"></path>',
+        'calendar'    => '<rect x="3" y="5" width="18" height="16" rx="2"></rect><line x1="3" y1="10" x2="21" y2="10"></line><line x1="8" y1="3" x2="8" y2="7"></line><line x1="16" y1="3" x2="16" y2="7"></line>',
         'phone'       => '<path d="M5 4h3.5l1.5 4-2 1.5a12 12 0 0 0 6.5 6.5l1.5-2 4 1.5V19a2 2 0 0 1-2 2C10.5 21 3 13.5 3 6a2 2 0 0 1 2-2z"></path>',
         'map-pin'     => '<path d="M12 21s-6.5-6.1-6.5-11A6.5 6.5 0 0 1 18.5 10c0 4.9-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle>',
         'star'        => '<polygon points="12 2 15 9 22 9.5 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9.5 9 9"></polygon>',
@@ -454,8 +670,6 @@ function icon(string $name, string $class = 'icon'): string
         'globe'       => '<circle cx="12" cy="12" r="9"></circle><line x1="3" y1="12" x2="21" y2="12"></line><path d="M12 3c2.5 2.7 4 6 4 9s-1.5 6.3-4 9c-2.5-2.7-4-6-4-9s1.5-6.3 4-9z"></path>',
         'instagram'   => '<rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.3" cy="6.7" r="1" fill="currentColor" stroke="none"></circle>',
         'facebook'    => '<path d="M14 9h3V5h-3a4 4 0 0 0-4 4v2H7v4h3v6h4v-6h3l1-4h-4V9a1 1 0 0 1 1-1z"></path>',
-        'linkedin'    => '<rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="7.5" y1="10" x2="7.5" y2="17"></line><circle cx="7.5" cy="6.8" r="1" fill="currentColor" stroke="none"></circle><path d="M11.5 17v-4.5a2.5 2.5 0 0 1 5 0V17"></path><line x1="11.5" y1="10" x2="11.5" y2="17"></line>',
-        'youtube'     => '<rect x="2.5" y="6" width="19" height="12" rx="3"></rect><polygon points="10.5 9.5 15.5 12 10.5 14.5" fill="currentColor" stroke="none"></polygon>',
         'quote'       => '<path d="M9 7c-2.5 0-4.5 2-4.5 4.5S6.5 16 9 16" ></path><path d="M6 11c0-2.5 1.5-4.5 4-5.5"></path><path d="M18 7c-2.5 0-4.5 2-4.5 4.5S15.5 16 18 16"></path><path d="M15 11c0-2.5 1.5-4.5 4-5.5"></path>',
         'clock'       => '<circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 16 14"></polyline>',
         'layers'      => '<polygon points="12 3 21 8 12 13 3 8"></polygon><polyline points="3 13 12 18 21 13"></polyline><polyline points="3 17.5 12 22.5 21 17.5"></polyline>',

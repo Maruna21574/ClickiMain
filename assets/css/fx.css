@@ -24,8 +24,16 @@
 .hero__glow-a { translate: calc(var(--px, 0) * -40px) calc(var(--py, 0) * -30px); }
 .hero__glow-b { translate: calc(var(--px, 0) * 50px) calc(var(--py, 0) * 40px); }
 
+/* ---------- hero: mriežka s impulzmi (canvas, kreslí fx.js) ---------- */
+.hero__bg {
+  position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;
+  -webkit-mask-image: radial-gradient(ellipse 85% 75% at 72% 45%, #000 25%, transparent 100%);
+  mask-image: radial-gradient(ellipse 85% 75% at 72% 45%, #000 25%, transparent 100%);
+}
+@media (max-width: 700px) { .hero__bg { opacity: 0.7; } }
+
 /* ---------- žiara pod kurzorom na kartách ---------- */
-.has-spot { position: relative; }
+:where(.has-spot) { position: relative; }
 .fx-spot {
   position: absolute; inset: 0; z-index: 0; border-radius: inherit; pointer-events: none;
   background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), rgba(244, 49, 130, 0.14), transparent 45%);
@@ -50,7 +58,9 @@
 .cmdk-open .fx-cursor { opacity: 0; }
 
 /* magnetické tlačidlá — pri návrate plynulo */
-.btn--primary, .btn--chrome, .cmdk-trigger { transition: transform 0.35s var(--ease), box-shadow var(--dur-base) var(--ease-soft); }
+.btn, .cmdk-trigger { transition: transform 0.35s var(--ease), box-shadow var(--dur-base) var(--ease-soft), border-color var(--dur-fast), color var(--dur-fast); }
+.btn svg.icon { transition: transform var(--dur-fast) var(--ease-soft); }
+.btn:hover svg.icon { transform: translateX(3px); }
 
 /* ---------- tlačidlo vyhľadávania v hlavičke ---------- */
 .cmdk-trigger {
@@ -117,3 +127,31 @@
   .hero__title .line.text-gradient--animated { animation: shineSweep 6s linear infinite; }
   .cmdk__panel, .cmdk__backdrop { transition: none; }
 }
+
+/* ---------- karty projektov: paralaxa pri scrolle + "živý náhľad" webu pri nabehnutí ---------- */
+.project-card.has-parallax .project-card__inner { scale: 1.16; translate: 0 var(--par, 0%); }
+.project-card__strip { position: absolute; top: 0; left: 0; right: 0; opacity: 0; pointer-events: none; transition: opacity 0.25s, transform 0.6s var(--ease); }
+.project-card__strip img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+@media (hover: hover) and (pointer: fine) {
+  .project-card:hover .project-card__strip, .project-card:focus-visible .project-card__strip {
+    opacity: 1;
+    transform: translateY(calc(-100% * (var(--n) - 1) / var(--n)));
+    transition: opacity 0.25s, transform calc(var(--n) * 1.2s) cubic-bezier(.45, 0, .25, 1) 0.35s;
+  }
+}
+
+/* ---------- nadpisy: slová sa odkrývajú zospodu ---------- */
+.fx-split .fx-w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.16em; margin-bottom: -0.16em; }
+.fx-split .fx-w > span { display: inline-block; transform: translateY(115%); transition: transform 0.9s var(--ease) calc(var(--i) * 70ms); }
+.fx-split.is-in .fx-w > span { transform: none; }
+
+/* ---------- pás kľúčových slov (posúva sa podľa scrollu) ---------- */
+.kw-band { overflow: hidden; padding-block: clamp(1.5rem, 3vw, 3rem); border-block: 1px solid var(--border); }
+.kw-band__row { display: flex; width: max-content; margin-left: 50%; transform: translateX(calc(-50% + var(--kx, 0px))); will-change: transform; }
+.kw-band__row span { font-family: var(--font-display); font-weight: 700; line-height: 1.05; white-space: nowrap; font-size: clamp(2.6rem, 8vw, 7rem); color: var(--text); padding-inline: 0.35em; display: inline-flex; align-items: center; }
+.kw-band__row span::after { content: ''; width: 0.16em; height: 0.16em; border-radius: 50%; background: var(--pink); margin-left: 0.7em; }
+.kw-band__row--outline span { color: transparent; -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.45); }
+.kw-band__row--outline span:nth-child(even) { -webkit-text-stroke-color: var(--pink); }
+
+/* ---------- CTA: žiara sleduje myš ---------- */
+.cta-band::before { background: radial-gradient(circle at var(--cx, 30%) var(--cy, 20%), var(--pink-glow), transparent 55%); }

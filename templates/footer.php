@@ -9,8 +9,6 @@
         <div class="footer-social">
           <a href="#" aria-label="Instagram"><?= icon('instagram') ?></a>
           <a href="#" aria-label="Facebook"><?= icon('facebook') ?></a>
-          <a href="#" aria-label="LinkedIn"><?= icon('linkedin') ?></a>
-          <a href="#" aria-label="YouTube"><?= icon('youtube') ?></a>
         </div>
       </div>
 
@@ -22,15 +20,19 @@
           <li><a href="/portfolio.php"><?= h(t('nav.portfolio')) ?></a></li>
           <li><a href="/o-nas.php"><?= h(t('nav.about')) ?></a></li>
           <li><a href="/kontakt.php"><?= h(t('nav.contact')) ?></a></li>
+          <li><a href="/blog.php"><?= h(t('footer.blog')) ?></a></li>
         </ul>
       </div>
 
       <div class="footer-col">
         <h4><?= h(t('footer.services_title')) ?></h4>
         <ul>
+          <?php $lpMap = ['web' => 'tvorba-webstranok', 'seo' => 'seo-optimalizacia', 'sprava-webu' => 'sprava-webu', 'socialne-siete' => 'socialne-siete', 'grafika' => 'graficky-dizajn', 'foto' => 'svadobna-fotografia']; ?>
           <?php foreach (td('services') as $slug => $svc): ?>
-          <li><a href="/sluzby.php#<?= h($slug) ?>"><?= h($svc['title']) ?></a></li>
+          <li><a href="<?= isset($lpMap[$slug]) ? '/' . h($lpMap[$slug]) : '/sluzby.php#' . h($slug) ?>"><?= h($svc['title']) ?></a></li>
           <?php endforeach; ?>
+          <li><a href="/web-na-mieru">Web na mieru</a></li>
+          <li><a href="/tvorba-eshopov">Tvorba e-shopov</a></li>
         </ul>
       </div>
 
@@ -43,13 +45,24 @@
       </div>
     </div>
 
+    <nav class="footer-topics" aria-label="Témy">
+      <?php foreach (landing_pages() as $tpSlug => $tp): ?>
+      <a href="/<?= h($tpSlug) ?>"><?= h($tp['nav']) ?></a>
+      <?php endforeach; ?>
+    </nav>
+
     <div class="footer-bottom">
       <span>&copy; <?= date('Y') ?> <?= brand('Clicki') ?>. <?= h(t('footer.rights')) ?></span>
       <span><?= h(t('footer.made_with')) ?></span>
-      <a href="#main" class="back-to-top"><?= icon('chevron-down', 'icon') ?> <?= h(t('footer.back_to_top')) ?></a>
+      <nav class="footer-legal" aria-label="<?= h(t('footer.privacy')) ?>">
+        <a href="/gdpr.php"><?= h(t('footer.privacy')) ?></a>
+        <a href="/cookies.php"><?= h(t('footer.cookies')) ?></a>
+      </nav>
     </div>
   </div>
 </footer>
+
+<?php require __DIR__ . '/contact-fab.php'; ?>
 
 <button type="button" class="scroll-top" aria-label="<?= h(t('footer.back_to_top')) ?>"><?= icon('chevron-down') ?></button>
 
@@ -102,6 +115,19 @@ $cmdkData = [
 </div>
 <script type="application/json" id="cmdk-data"><?= json_encode($cmdkData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP) ?></script>
 
+
+<div class="cookie-bar" data-cookie-bar role="dialog" aria-live="polite" aria-label="<?= h(t('cookie.title')) ?>" hidden>
+  <div class="cookie-bar__text">
+    <strong><?= h(t('cookie.title')) ?></strong>
+    <p><?= h(t('cookie.text')) ?> <a href="/cookies.php"><?= h(t('cookie.more')) ?></a></p>
+  </div>
+  <div class="cookie-bar__actions">
+    <button type="button" class="btn btn--ghost btn--sm" data-cookie-choice="necessary"><?= h(t('cookie.necessary')) ?></button>
+    <button type="button" class="btn btn--primary btn--sm" data-cookie-choice="all"><?= h(t('cookie.accept')) ?></button>
+  </div>
+</div>
+<script src="/assets/js/consent.js" defer></script>
+<script src="/assets/js/contact-fab.js" defer></script>
 <script src="/assets/js/main.js" defer></script>
 <script src="/assets/js/fx.js" defer></script>
 <?php if (!empty($extraScripts)) foreach ($extraScripts as $src): ?>
