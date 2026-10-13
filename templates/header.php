@@ -68,6 +68,9 @@ if (!preg_match('#^https?://#', $ogImg)) { $ogImg = site_url($ogImg); }
 <link rel="icon" type="image/png" sizes="192x192" href="/assets/img/favicon-192.png">
 <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
 
+<?php if (empty($heroHasVideo) && is_file(SITE_ROOT . '/assets/video/services.mp4')): ?>
+<link rel="prefetch" href="/assets/video/services.mp4" as="video" type="video/mp4">
+<?php endif; ?>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" media="print" onload="this.media='all'">
