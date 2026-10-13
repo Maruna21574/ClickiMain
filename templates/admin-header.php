@@ -12,10 +12,10 @@ $adminActive = $adminActive ?? '';
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/css/tokens.css">
-<link rel="stylesheet" href="/assets/css/base.css">
-<link rel="stylesheet" href="/assets/css/components.css">
-<link rel="stylesheet" href="/assets/css/admin.css">
+<link rel="stylesheet" href="<?= asset('/assets/css/tokens.css') ?>">
+<link rel="stylesheet" href="<?= asset('/assets/css/base.css') ?>">
+<link rel="stylesheet" href="<?= asset('/assets/css/components.css') ?>">
+<link rel="stylesheet" href="<?= asset('/assets/css/admin.css') ?>">
 </head>
 <body class="js">
 <div class="admin-body">

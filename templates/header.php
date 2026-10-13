@@ -72,12 +72,12 @@ if (!preg_match('#^https?://#', $ogImg)) { $ogImg = site_url($ogImg); }
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="/assets/css/tokens.css">
-<link rel="stylesheet" href="/assets/css/base.css">
-<link rel="stylesheet" href="/assets/css/components.css">
-<link rel="stylesheet" href="/assets/css/animations.css">
-<link rel="stylesheet" href="/assets/css/pages.css">
-<link rel="stylesheet" href="/assets/css/fx.css">
+<link rel="stylesheet" href="<?= asset('/assets/css/tokens.css') ?>">
+<link rel="stylesheet" href="<?= asset('/assets/css/base.css') ?>">
+<link rel="stylesheet" href="<?= asset('/assets/css/components.css') ?>">
+<link rel="stylesheet" href="<?= asset('/assets/css/animations.css') ?>">
+<link rel="stylesheet" href="<?= asset('/assets/css/pages.css') ?>">
+<link rel="stylesheet" href="<?= asset('/assets/css/fx.css') ?>">
 </head>
 <body class="<?= h($bodyClass) ?>">
 <div class="scroll-progress" aria-hidden="true"><span></span></div>

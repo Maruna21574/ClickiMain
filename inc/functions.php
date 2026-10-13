@@ -11,6 +11,13 @@ function h(?string $s): string
     return htmlspecialchars($s ?? '', ENT_QUOTES, 'UTF-8');
 }
 
+/** URL statického súboru s verziou podľa času zmeny (obchádza dlhú cache prehliadača po deployi). */
+function asset(string $path): string
+{
+    $file = SITE_ROOT . $path;
+    return $path . '?v=' . (is_file($file) ? filemtime($file) : 0);
+}
+
 /** Ako h(), ale slovo "Clicki" v texte nahradí inline logom (len pre viditeľný text, nie pre title/meta/alt). */
 function brand(?string $s): string
 {
