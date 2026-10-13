@@ -45,12 +45,6 @@
       </div>
     </div>
 
-    <nav class="footer-topics" aria-label="Témy">
-      <?php foreach (landing_pages() as $tpSlug => $tp): ?>
-      <a href="/<?= h($tpSlug) ?>"><?= h($tp['nav']) ?></a>
-      <?php endforeach; ?>
-    </nav>
-
     <div class="footer-bottom">
       <span>&copy; <?= date('Y') ?> <?= brand('Clicki') ?>. <?= h(t('footer.rights')) ?></span>
       <span><?= h(t('footer.made_with')) ?></span>
