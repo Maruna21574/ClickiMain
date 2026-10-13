@@ -51,7 +51,6 @@ require __DIR__ . '/templates/header.php';
   </div>
   <div class="hero__scroll">
     <span class="hero__scroll-line"><span class="scroll-cue__dot" style="position:absolute;top:0;left:-2px;width:5px;height:5px;border-radius:50%;background:var(--pink);"></span></span>
-    <span><?= h(t('home.hero.scroll')) ?></span>
   </div>
 </section>
 
