@@ -13,13 +13,13 @@
 .scroll-progress span { display: block; height: 100%; background: linear-gradient(90deg, var(--pink), #ff7ab6); transform: scaleX(0); transform-origin: 0 50%; box-shadow: 0 0 12px var(--pink-glow); }
 
 /* ---------- hero: postupné odhalenie + gule reagujúce na myš ---------- */
-.hero .eyebrow, .hero__title .line, .hero__subtitle, .hero__actions { animation: fx-rise 1s var(--ease) both; }
-.hero__title .line:nth-child(1) { animation-delay: 0.1s; }
-.hero__title .line:nth-child(2) { animation-delay: 0.25s; }
-.hero__title .line.text-gradient--animated { animation: fx-rise 1s var(--ease) 0.25s both, shineSweep 6s linear infinite; }
-.hero__subtitle { animation-delay: 0.4s; }
-.hero__actions { animation-delay: 0.52s; }
-@keyframes fx-rise { from { opacity: 0; transform: translateY(0.6em); filter: blur(10px); } }
+.hero .eyebrow, .hero__title .line, .hero__subtitle, .hero__actions { animation: fx-rise 0.55s var(--ease) both; }
+.hero__title .line:nth-child(1) { animation-delay: 0.03s; }
+.hero__title .line:nth-child(2) { animation-delay: 0.08s; }
+.hero__title .line.text-gradient--animated { animation: fx-rise 0.55s var(--ease) 0.08s both, shineSweep 6s linear infinite; }
+.hero__subtitle { animation-delay: 0.14s; }
+.hero__actions { animation-delay: 0.2s; }
+@keyframes fx-rise { from { opacity: 0; transform: translateY(0.4em); } }
 .hero__glow-a, .hero__glow-b { transition: translate 1.2s var(--ease); }
 .hero__glow-a { translate: calc(var(--px, 0) * -40px) calc(var(--py, 0) * -30px); }
 .hero__glow-b { translate: calc(var(--px, 0) * 50px) calc(var(--py, 0) * 40px); }
