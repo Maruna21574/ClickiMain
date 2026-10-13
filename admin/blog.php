@@ -27,7 +27,7 @@ require __DIR__ . '/../templates/admin-header.php';
         <td><?= h(format_date($p['published_at'])) ?></td>
         <td><?= $p['is_published'] ? '<span class="tag-pill tag-pill--pink">Zverejnený</span>' : '<span class="tag-pill tag-pill--muted">Koncept</span>' ?></td>
         <td class="row-actions">
-          <a href="/clanok.php?slug=<?= urlencode($p['slug']) ?>" target="_blank" class="btn btn--ghost btn--sm">Zobraziť</a>
+          <a href="/clanok?slug=<?= urlencode($p['slug']) ?>" target="_blank" class="btn btn--ghost btn--sm">Zobraziť</a>
           <a href="/admin/blog-form.php?id=<?= (int)$p['id'] ?>" class="btn btn--ghost btn--sm">Upraviť</a>
           <form method="post" action="/admin/blog-delete.php" data-confirm="Naozaj zmazať článok „<?= h($p['title_sk']) ?>“?">
             <?= csrf_field() ?>

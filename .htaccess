@@ -34,5 +34,12 @@ ErrorDocument 404 /404.php
     RewriteRule ^robots\.txt$ robots.php [L]
     RewriteRule ^sitemap\.xml$ sitemap.php [L]
     RewriteRule ^konzultacia/?$ rezervacia.php [L,QSA]
+
+    # adresy bez .php: /sluzby namiesto /sluzby.php (staré adresy presmerujeme trvalo)
+    RewriteCond %{THE_REQUEST} \s/rezervacia\.php[\s?]
+    RewriteRule ^rezervacia\.php$ /konzultacia [R=301,L]
+    RewriteCond %{THE_REQUEST} \s/(sluzby|portfolio|ponuka|o-nas|kontakt|blog|clanok|projekt|gdpr|cookies)\.php[\s?]
+    RewriteRule ^(.+)\.php$ /$1 [R=301,L]
+    RewriteRule ^(sluzby|portfolio|ponuka|o-nas|kontakt|blog|clanok|projekt|gdpr|cookies)/?$ $1.php [L,QSA]
     RewriteRule ^(tvorba-webstranok|web-na-mieru|tvorba-eshopov|svadobna-fotografia|seo-optimalizacia|sprava-webu|zrychlenie-webu|redizajn-webu|tvorba-webovych-aplikacii|socialne-siete|graficky-dizajn|portretna-fotografia|rodinna-fotografia)/?$ landing.php?slug= [L,QSA]
 </IfModule>

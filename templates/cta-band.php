@@ -24,8 +24,8 @@ $ctaPoster = is_file(SITE_ROOT . '/assets/video/cta-poster.jpg') ? '/assets/vide
         <h2><?= h($ctaTitle) ?></h2>
         <p class="cta-band__text"><?= h($ctaText) ?></p>
         <div class="cta-band__actions">
-          <a href="/kontakt.php" class="btn btn--primary"><?= h($ctaButton) ?> <?= icon('arrow-right') ?></a>
-          <a href="/ponuka.php" class="btn btn--ghost"><?= h(t('cta.quote')) ?> <?= icon('arrow-right') ?></a>
+          <a href="/kontakt" class="btn btn--primary"><?= h($ctaButton) ?> <?= icon('arrow-right') ?></a>
+          <a href="/ponuka" class="btn btn--ghost"><?= h(t('cta.quote')) ?> <?= icon('arrow-right') ?></a>
         </div>
       </div>
 

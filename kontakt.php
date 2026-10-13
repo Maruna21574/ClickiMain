@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $spam = spam_check('kontakt', [$old['name'], $old['message'], $old['website'], $old['phone']]);
         if ($spam === 'silent') {
-            redirect('/kontakt.php?odoslane=1'); // roboty: tvárime sa, že prešlo
+            redirect('/kontakt?odoslane=1'); // roboty: tvárime sa, že prešlo
         }
         if ($spam === 'limit') {
             $errors[] = t('contact.form.too_many');
@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         @mail(ADMIN_EMAIL, $subject, $body, $headers);
 
         spam_done('kontakt');
-        redirect('/kontakt.php?odoslane=1');
+        redirect('/kontakt?odoslane=1');
     }
 }
 
@@ -88,7 +88,7 @@ require __DIR__ . '/templates/header.php';
           <div class="form-alert form-alert--error"><?= h(t('contact.form.validation')) ?></div>
         <?php endif; ?>
 
-        <form method="post" action="/kontakt.php" novalidate>
+        <form method="post" action="/kontakt" novalidate>
           <?= csrf_field() ?>
           <?= spam_fields('kontakt') ?>
           <div class="field-row">

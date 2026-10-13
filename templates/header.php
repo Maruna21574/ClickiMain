@@ -91,11 +91,11 @@ if (!preg_match('#^https?://#', $ogImg)) { $ogImg = site_url($ogImg); }
 
     <nav class="main-nav" id="main-nav">
       <ul class="main-nav__list">
-        <li><a class="main-nav__link<?= $activeNav === 'home' ? ' is-active' : '' ?>" href="/index.php"><?= h(t('nav.home')) ?></a></li>
-        <li><a class="main-nav__link<?= $activeNav === 'services' ? ' is-active' : '' ?>" href="/sluzby.php"><?= h(t('nav.services')) ?></a></li>
-        <li><a class="main-nav__link<?= $activeNav === 'portfolio' ? ' is-active' : '' ?>" href="/portfolio.php"><?= h(t('nav.portfolio')) ?></a></li>
-        <li><a class="main-nav__link<?= $activeNav === 'about' ? ' is-active' : '' ?>" href="/o-nas.php"><?= h(t('nav.about')) ?></a></li>
-        <li><a class="main-nav__link<?= $activeNav === 'contact' ? ' is-active' : '' ?>" href="/kontakt.php"><?= h(t('nav.contact')) ?></a></li>
+        <li><a class="main-nav__link<?= $activeNav === 'home' ? ' is-active' : '' ?>" href="/"><?= h(t('nav.home')) ?></a></li>
+        <li><a class="main-nav__link<?= $activeNav === 'services' ? ' is-active' : '' ?>" href="/sluzby"><?= h(t('nav.services')) ?></a></li>
+        <li><a class="main-nav__link<?= $activeNav === 'portfolio' ? ' is-active' : '' ?>" href="/portfolio"><?= h(t('nav.portfolio')) ?></a></li>
+        <li><a class="main-nav__link<?= $activeNav === 'about' ? ' is-active' : '' ?>" href="/o-nas"><?= h(t('nav.about')) ?></a></li>
+        <li><a class="main-nav__link<?= $activeNav === 'contact' ? ' is-active' : '' ?>" href="/kontakt"><?= h(t('nav.contact')) ?></a></li>
         <li class="lang-switch" aria-label="Jazyk">
           <a href="<?= h(lang_url('sk')) ?>" class="<?= $lang === 'sk' ? 'is-active' : '' ?>">SK</a>
           <span>/</span>
@@ -108,7 +108,7 @@ if (!preg_match('#^https?://#', $ogImg)) { $ogImg = site_url($ogImg); }
       <button type="button" class="cmdk-trigger" data-cmdk-open aria-label="<?= h(t('cmdk.open')) ?> (Ctrl + K)" aria-haspopup="dialog">
         <?= icon('search') ?><span class="cmdk-trigger__label"><?= h(t('cmdk.open')) ?></span><kbd data-cmdk-kbd>Ctrl K</kbd>
       </button>
-      <a href="/ponuka.php" class="btn btn--primary btn--sm nav-cta-desktop"><?= h(t('nav.cta')) ?></a>
+      <a href="/ponuka" class="btn btn--primary btn--sm nav-cta-desktop"><?= h(t('nav.cta')) ?></a>
       <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="main-nav" aria-label="Menu">
         <?= icon('menu') ?>
       </button>

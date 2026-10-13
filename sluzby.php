@@ -104,7 +104,7 @@ require __DIR__ . '/templates/header.php';
         </div>
 
         <div class="service-detail__actions">
-          <a href="/kontakt.php" class="btn btn--primary"><?= h(t('services.cta')) ?> <?= icon('arrow-right') ?></a>
+          <a href="/kontakt" class="btn btn--primary"><?= h(t('services.cta')) ?> <?= icon('arrow-right') ?></a>
           <?php $lpMap = ['web' => 'tvorba-webstranok', 'seo' => 'seo-optimalizacia', 'sprava-webu' => 'sprava-webu', 'socialne-siete' => 'socialne-siete', 'grafika' => 'graficky-dizajn', 'foto' => 'svadobna-fotografia']; ?>
           <?php if (isset($lpMap[$slug])): ?><a href="/<?= h($lpMap[$slug]) ?>" class="btn btn--ghost"><?= h(landing_pages()[$lpMap[$slug]]['nav']) ?> <?= icon('arrow-right') ?></a><?php endif; ?>
         </div>

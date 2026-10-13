@@ -15,12 +15,12 @@
       <div class="footer-col">
         <h4><?= h(t('footer.nav_title')) ?></h4>
         <ul>
-          <li><a href="/index.php"><?= h(t('nav.home')) ?></a></li>
-          <li><a href="/sluzby.php"><?= h(t('nav.services')) ?></a></li>
-          <li><a href="/portfolio.php"><?= h(t('nav.portfolio')) ?></a></li>
-          <li><a href="/o-nas.php"><?= h(t('nav.about')) ?></a></li>
-          <li><a href="/kontakt.php"><?= h(t('nav.contact')) ?></a></li>
-          <li><a href="/blog.php"><?= h(t('footer.blog')) ?></a></li>
+          <li><a href="/"><?= h(t('nav.home')) ?></a></li>
+          <li><a href="/sluzby"><?= h(t('nav.services')) ?></a></li>
+          <li><a href="/portfolio"><?= h(t('nav.portfolio')) ?></a></li>
+          <li><a href="/o-nas"><?= h(t('nav.about')) ?></a></li>
+          <li><a href="/kontakt"><?= h(t('nav.contact')) ?></a></li>
+          <li><a href="/blog"><?= h(t('footer.blog')) ?></a></li>
         </ul>
       </div>
 
@@ -29,7 +29,7 @@
         <ul>
           <?php $lpMap = ['web' => 'tvorba-webstranok', 'seo' => 'seo-optimalizacia', 'sprava-webu' => 'sprava-webu', 'socialne-siete' => 'socialne-siete', 'grafika' => 'graficky-dizajn', 'foto' => 'svadobna-fotografia']; ?>
           <?php foreach (td('services') as $slug => $svc): ?>
-          <li><a href="<?= isset($lpMap[$slug]) ? '/' . h($lpMap[$slug]) : '/sluzby.php#' . h($slug) ?>"><?= h($svc['title']) ?></a></li>
+          <li><a href="<?= isset($lpMap[$slug]) ? '/' . h($lpMap[$slug]) : '/sluzby#' . h($slug) ?>"><?= h($svc['title']) ?></a></li>
           <?php endforeach; ?>
           <li><a href="/web-na-mieru">Web na mieru</a></li>
           <li><a href="/tvorba-eshopov">Tvorba e-shopov</a></li>
@@ -40,7 +40,7 @@
         <h4><?= h(t('footer.contact_title')) ?></h4>
         <ul>
           <li><a href="mailto:<?= h(ADMIN_EMAIL) ?>"><?= h(ADMIN_EMAIL) ?></a></li>
-          <li><a href="/ponuka.php"><?= h(t('nav.cta')) ?></a></li>
+          <li><a href="/ponuka"><?= h(t('nav.cta')) ?></a></li>
         </ul>
       </div>
     </div>
@@ -55,8 +55,8 @@
       <span>&copy; <?= date('Y') ?> <?= brand('Clicki') ?>. <?= h(t('footer.rights')) ?></span>
       <span><?= h(t('footer.made_with')) ?></span>
       <nav class="footer-legal" aria-label="<?= h(t('footer.privacy')) ?>">
-        <a href="/gdpr.php"><?= h(t('footer.privacy')) ?></a>
-        <a href="/cookies.php"><?= h(t('footer.cookies')) ?></a>
+        <a href="/gdpr"><?= h(t('footer.privacy')) ?></a>
+        <a href="/cookies"><?= h(t('footer.cookies')) ?></a>
       </nav>
     </div>
   </div>
@@ -70,20 +70,20 @@
 // dáta pre rýchle vyhľadávanie (Ctrl/⌘ + K) — stránky, služby, projekty z DB a akcie
 $cmdkIcons = ['web' => 'code', 'seo' => 'search', 'sprava-webu' => 'shield', 'socialne-siete' => 'share', 'grafika' => 'palette', 'foto' => 'camera'];
 $cmdkItems = [
-    ['g' => 'actions', 't' => t('nav.cta'), 'u' => '/ponuka.php', 'i' => 'arrow-right'],
+    ['g' => 'actions', 't' => t('nav.cta'), 'u' => '/ponuka', 'i' => 'arrow-right'],
     ['g' => 'actions', 't' => t('cmdk.action_email'), 's' => ADMIN_EMAIL, 'u' => 'mailto:' . ADMIN_EMAIL, 'i' => 'mail'],
     ['g' => 'actions', 't' => t('cmdk.action_lang'), 'u' => lang_url(current_lang() === 'sk' ? 'en' : 'sk'), 'i' => 'globe'],
     ['g' => 'pages', 't' => t('nav.home'), 'u' => '/', 'i' => 'layers'],
-    ['g' => 'pages', 't' => t('nav.services'), 'u' => '/sluzby.php', 'i' => 'layers'],
-    ['g' => 'pages', 't' => t('nav.portfolio'), 'u' => '/portfolio.php', 'i' => 'layers'],
-    ['g' => 'pages', 't' => t('nav.about'), 'u' => '/o-nas.php', 'i' => 'layers'],
-    ['g' => 'pages', 't' => t('nav.contact'), 'u' => '/kontakt.php', 'i' => 'layers'],
+    ['g' => 'pages', 't' => t('nav.services'), 'u' => '/sluzby', 'i' => 'layers'],
+    ['g' => 'pages', 't' => t('nav.portfolio'), 'u' => '/portfolio', 'i' => 'layers'],
+    ['g' => 'pages', 't' => t('nav.about'), 'u' => '/o-nas', 'i' => 'layers'],
+    ['g' => 'pages', 't' => t('nav.contact'), 'u' => '/kontakt', 'i' => 'layers'],
 ];
 foreach (td('services') as $slug => $svc) {
-    $cmdkItems[] = ['g' => 'services', 't' => $svc['title'], 's' => $svc['teaser'], 'u' => '/sluzby.php#' . $slug, 'i' => $cmdkIcons[$slug] ?? 'star'];
+    $cmdkItems[] = ['g' => 'services', 't' => $svc['title'], 's' => $svc['teaser'], 'u' => '/sluzby#' . $slug, 'i' => $cmdkIcons[$slug] ?? 'star'];
 }
 foreach (get_projects() as $p) {
-    $cmdkItems[] = ['g' => 'projects', 't' => field($p, 'title'), 's' => cat_name($p) . ($p['client'] ? ' · ' . $p['client'] : ''), 'u' => '/projekt.php?slug=' . rawurlencode($p['slug']), 'img' => cover_image($p)];
+    $cmdkItems[] = ['g' => 'projects', 't' => field($p, 'title'), 's' => cat_name($p) . ($p['client'] ? ' · ' . $p['client'] : ''), 'u' => '/projekt?slug=' . rawurlencode($p['slug']), 'img' => cover_image($p)];
 }
 $cmdkIconSvgs = [];
 foreach (array_unique(array_filter(array_column($cmdkItems, 'i'))) as $name) {
@@ -119,7 +119,7 @@ $cmdkData = [
 <div class="cookie-bar" data-cookie-bar role="dialog" aria-live="polite" aria-label="<?= h(t('cookie.title')) ?>" hidden>
   <div class="cookie-bar__text">
     <strong><?= h(t('cookie.title')) ?></strong>
-    <p><?= h(t('cookie.text')) ?> <a href="/cookies.php"><?= h(t('cookie.more')) ?></a></p>
+    <p><?= h(t('cookie.text')) ?> <a href="/cookies"><?= h(t('cookie.more')) ?></a></p>
   </div>
   <div class="cookie-bar__actions">
     <button type="button" class="btn btn--ghost btn--sm" data-cookie-choice="necessary"><?= h(t('cookie.necessary')) ?></button>

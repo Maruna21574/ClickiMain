@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../inc/functions.php';
 
 if (is_logged_in()) {
-    redirect('/admin/index.php');
+    redirect('/admin/');
 }
 
 $isSetup = !admin_exists();
@@ -28,13 +28,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = db()->prepare('INSERT INTO admin_users (username, password_hash) VALUES (?, ?)');
             $stmt->execute([$username, password_hash($password, PASSWORD_DEFAULT)]);
             attempt_login($username, $password);
-            redirect('/admin/index.php');
+            redirect('/admin/');
         }
     } else {
         $username = trim((string)($_POST['username'] ?? ''));
         $password = (string)($_POST['password'] ?? '');
         if (attempt_login($username, $password)) {
-            redirect('/admin/index.php');
+            redirect('/admin/');
         }
         login_failed();
         $error = 'Nesprávne prihlasovacie meno alebo heslo.';

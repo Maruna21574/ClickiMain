@@ -13,7 +13,7 @@ if (!$post) {
     <section class="error-page">
       <div class="container text-center">
         <h1><?= h(t('blog.empty')) ?></h1>
-        <p class="lead" style="margin-block:1.5rem;"><a href="/blog.php" class="btn btn--primary"><?= h(t('blog.back')) ?> <?= icon('arrow-right') ?></a></p>
+        <p class="lead" style="margin-block:1.5rem;"><a href="/blog" class="btn btn--primary"><?= h(t('blog.back')) ?> <?= icon('arrow-right') ?></a></p>
       </div>
     </section>
     <?php
@@ -59,7 +59,7 @@ $idx = array_search((int)$post['id'], array_map('intval', array_column($all, 'id
 $newer = ($idx !== false && $idx > 0) ? $all[$idx - 1] : null;
 $older = ($idx !== false && isset($all[$idx + 1])) ? $all[$idx + 1] : null;
 $more = get_posts(3, (int)$post['id']);
-$postUrl = '/clanok.php?slug=' . urlencode($post['slug']);
+$postUrl = '/clanok?slug=' . urlencode($post['slug']);
 
 require __DIR__ . '/templates/header.php';
 ?>
@@ -71,7 +71,7 @@ require __DIR__ . '/templates/header.php';
     <img class="post-hero__img" src="<?= h($cover) ?>" alt="">
     <span class="post-hero__shade" aria-hidden="true"></span>
     <div class="container container--narrow post-hero__inner">
-      <a href="/blog.php" class="post-back"><?= icon('arrow-right') ?> <?= h(t('blog.back')) ?></a>
+      <a href="/blog" class="post-back"><?= icon('arrow-right') ?> <?= h(t('blog.back')) ?></a>
       <div class="post-card__meta">
         <span class="post-card__topic"><?= h($topicLabel) ?></span>
         <span><?= h(format_date($post['published_at'])) ?></span>
@@ -118,13 +118,13 @@ require __DIR__ . '/templates/header.php';
         <?php if ($newer || $older): ?>
         <nav class="post-pager">
           <?php if ($older): ?>
-          <a href="/clanok.php?slug=<?= urlencode($older['slug']) ?>" class="post-pager__item">
+          <a href="/clanok?slug=<?= urlencode($older['slug']) ?>" class="post-pager__item">
             <small><?= h(t('blog.prev')) ?></small>
             <span><?= h(post_text($older, 'title')) ?></span>
           </a>
           <?php else: ?><span></span><?php endif; ?>
           <?php if ($newer): ?>
-          <a href="/clanok.php?slug=<?= urlencode($newer['slug']) ?>" class="post-pager__item post-pager__item--next">
+          <a href="/clanok?slug=<?= urlencode($newer['slug']) ?>" class="post-pager__item post-pager__item--next">
             <small><?= h(t('blog.next')) ?></small>
             <span><?= h(post_text($newer, 'title')) ?></span>
           </a>
@@ -141,7 +141,7 @@ require __DIR__ . '/templates/header.php';
   <div class="container">
     <div class="more-projects__head">
       <h2><?= h(t('blog.more')) ?></h2>
-      <a href="/blog.php" class="btn btn--ghost btn--sm"><?= h(t('blog.back')) ?> <?= icon('arrow-right') ?></a>
+      <a href="/blog" class="btn btn--ghost btn--sm"><?= h(t('blog.back')) ?> <?= icon('arrow-right') ?></a>
     </div>
     <div class="grid post-grid">
       <?php foreach ($more as $post): ?>

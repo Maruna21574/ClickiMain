@@ -6,7 +6,7 @@ $postTitle = post_text($post, 'title');
 $topicKey = 'blog.topic.' . $post['topic'];
 $topicLabel = t($topicKey) !== $topicKey ? t($topicKey) : t('blog.topic.web');
 ?>
-<a href="/clanok.php?slug=<?= urlencode($post['slug']) ?>" class="post-card">
+<a href="/clanok?slug=<?= urlencode($post['slug']) ?>" class="post-card">
   <div class="post-card__media">
     <img src="<?= h(post_cover($post)) ?>" alt="<?= h($postTitle) ?>" loading="lazy">
   </div>

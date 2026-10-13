@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // honeypot, časová pasca, limit odoslaní a filter obsahu (inc/antispam.php)
         $spam = spam_check('ponuka', [$old['name'], $old['note'], $old['website'], $old['phone']]);
         if ($spam === 'silent') {
-            redirect('/ponuka.php?odoslane=1');
+            redirect('/ponuka?odoslane=1');
         }
         if ($spam === 'limit') {
             $errors['form'] = t('contact.form.too_many');
@@ -89,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         @mail(ADMIN_EMAIL, 'Nový dopyt z konfigurátora Clicki od ' . $name, $body, 'From: ' . MAIL_FROM . "\r\nReply-To: " . $old['email']);
 
         spam_done('ponuka');
-        redirect('/ponuka.php?odoslane=1#quote-contact');
+        redirect('/ponuka?odoslane=1#quote-contact');
     }
 }
 
@@ -121,7 +121,7 @@ require __DIR__ . '/templates/header.php';
 
 <section class="section section--tight">
   <div class="container">
-    <form method="post" action="/ponuka.php#quote-contact" class="quote" id="quote-form" novalidate>
+    <form method="post" action="/ponuka#quote-contact" class="quote" id="quote-form" novalidate>
       <?= csrf_field() ?>
       <?= spam_fields('ponuka') ?>
 

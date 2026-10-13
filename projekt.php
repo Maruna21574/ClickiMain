@@ -13,7 +13,7 @@ if (!$project) {
     <section class="error-page">
       <div class="container text-center">
         <h1><?= h(t('project.not_found')) ?></h1>
-        <p class="lead" style="margin-block:1.5rem;"><a href="/portfolio.php" class="btn btn--primary"><?= h(t('project.back')) ?> <?= icon('arrow-right') ?></a></p>
+        <p class="lead" style="margin-block:1.5rem;"><a href="/portfolio" class="btn btn--primary"><?= h(t('project.back')) ?> <?= icon('arrow-right') ?></a></p>
       </div>
     </section>
     <?php
@@ -73,7 +73,7 @@ require __DIR__ . '/templates/header.php';
 <section class="pd-hero">
   <span class="hero-glow page-hero__glow"></span>
   <div class="container">
-    <a href="/portfolio.php" class="back-link"><?= icon('arrow-right', 'icon') ?> <?= h(t('project.back')) ?></a>
+    <a href="/portfolio" class="back-link"><?= icon('arrow-right', 'icon') ?> <?= h(t('project.back')) ?></a>
     <div class="pd-hero__grid">
       <div class="pd-hero__text">
         <p class="eyebrow"><?= h(cat_name($project)) ?></p>
@@ -83,7 +83,7 @@ require __DIR__ . '/templates/header.php';
           <?php if ($liveUrl): ?>
           <a href="<?= h($liveUrl) ?>" class="btn btn--primary" target="_blank" rel="noopener"><?= h($liveLabel) ?> <?= icon('arrow-up-right') ?></a>
           <?php endif; ?>
-          <a href="/ponuka.php" class="btn btn--ghost"><?= h(t('project.similar_cta')) ?> <?= icon('arrow-right') ?></a>
+          <a href="/ponuka" class="btn btn--ghost"><?= h(t('project.similar_cta')) ?> <?= icon('arrow-right') ?></a>
         </div>
       </div>
 
@@ -208,7 +208,7 @@ require __DIR__ . '/templates/header.php';
   <div class="container">
     <div class="more-projects__head">
       <h2><?= h(t('project.more_title')) ?></h2>
-      <a href="/portfolio.php" class="btn btn--ghost btn--sm"><?= h(t('project.more_all')) ?> <?= icon('arrow-right') ?></a>
+      <a href="/portfolio" class="btn btn--ghost btn--sm"><?= h(t('project.more_all')) ?> <?= icon('arrow-right') ?></a>
     </div>
     <div class="grid portfolio-grid">
       <?php foreach ($more as $p): ?>

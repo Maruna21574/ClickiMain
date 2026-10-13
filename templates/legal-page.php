@@ -46,7 +46,7 @@
       <h2><?= h($page['settings_h']) ?></h2>
       <p><?= h($page['settings_p']) ?></p>
       <p><button type="button" class="btn btn--ghost btn--sm" data-cookie-settings><?= h($page['settings_btn']) ?></button></p>
-      <p><a href="/gdpr.php"><?= h($page['privacy_link']) ?> →</a></p>
+      <p><a href="/gdpr"><?= h($page['privacy_link']) ?> →</a></p>
       <?php else: ?>
       <h2><?= h($page['contact_h']) ?></h2>
       <p><?= h($page['contact_p']) ?> <a href="mailto:<?= h(ADMIN_EMAIL) ?>"><?= h(ADMIN_EMAIL) ?></a></p>
@@ -58,7 +58,7 @@
         <?php if (LEGAL_ICO !== ''): ?><li>IČO: <?= h(LEGAL_ICO) ?></li><?php endif; ?>
       </ul>
       <?php endif; ?>
-      <p><a href="/cookies.php"><?= h(t('footer.cookies')) ?> →</a></p>
+      <p><a href="/cookies"><?= h(t('footer.cookies')) ?> →</a></p>
       <?php endif; ?>
     </div>
   </div>

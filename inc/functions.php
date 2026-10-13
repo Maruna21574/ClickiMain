@@ -589,7 +589,7 @@ function render_post_body(string $text, ?array &$toc = null): string
         if (preg_match('/^\[\[projekt:([a-z0-9-]+)\]\]$/', $block, $m)) {
             $p = get_project_by_slug($m[1]);
             if ($p) {
-                $out .= '<a class="post-embed" href="/projekt.php?slug=' . urlencode($p['slug']) . '">'
+                $out .= '<a class="post-embed" href="/projekt?slug=' . urlencode($p['slug']) . '">'
                     . '<img src="' . h(cover_image($p)) . '" alt="" loading="lazy">'
                     . '<span class="post-embed__text"><small>' . h(t('blog.embed_label')) . '</small>'
                     . '<strong>' . h(field($p, 'title')) . '</strong>'

@@ -60,7 +60,7 @@ $ld = [
             '@type' => 'BreadcrumbList',
             'itemListElement' => [
                 ['@type' => 'ListItem', 'position' => 1, 'name' => 'Clicki', 'item' => site_url('/')],
-                ['@type' => 'ListItem', 'position' => 2, 'name' => t('nav.services'), 'item' => site_url('/sluzby.php')],
+                ['@type' => 'ListItem', 'position' => 2, 'name' => t('nav.services'), 'item' => site_url('/sluzby')],
                 ['@type' => 'ListItem', 'position' => 3, 'name' => $lp['nav'], 'item' => $canonical],
             ],
         ],
@@ -79,14 +79,14 @@ require __DIR__ . '/templates/header.php';
   <span class="hero-glow page-hero__glow"></span>
   <div class="container">
     <nav class="breadcrumbs" aria-label="Breadcrumb">
-      <a href="/">Clicki</a> <span>/</span> <a href="/sluzby.php"><?= h(t('nav.services')) ?></a> <span>/</span> <span aria-current="page"><?= h($lp['nav']) ?></span>
+      <a href="/">Clicki</a> <span>/</span> <a href="/sluzby"><?= h(t('nav.services')) ?></a> <span>/</span> <span aria-current="page"><?= h($lp['nav']) ?></span>
     </nav>
     <p class="eyebrow"><?= h($lp['eyebrow']) ?></p>
     <h1><?= h($lp['h1']) ?></h1>
     <p class="lead"><?= h($lp['lead']) ?></p>
     <div class="lp-hero__actions">
-      <a href="/ponuka.php" class="btn btn--primary"><?= h($lp['cta']) ?> <?= icon('arrow-right') ?></a>
-      <a href="/kontakt.php" class="btn btn--ghost"><?= h(t('nav.contact')) ?></a>
+      <a href="/ponuka" class="btn btn--primary"><?= h($lp['cta']) ?> <?= icon('arrow-right') ?></a>
+      <a href="/kontakt" class="btn btn--ghost"><?= h(t('nav.contact')) ?></a>
     </div>
   </div>
 </section>
@@ -141,7 +141,7 @@ require __DIR__ . '/templates/header.php';
   <div class="container">
     <div class="more-projects__head">
       <h2><?= h($lp['nav']) ?>: <?= h(current_lang() === 'en' ? 'our work' : 'naše realizácie') ?></h2>
-      <a href="/portfolio.php" class="btn btn--ghost btn--sm"><?= h(t('project.more_all')) ?> <?= icon('arrow-right') ?></a>
+      <a href="/portfolio" class="btn btn--ghost btn--sm"><?= h(t('project.more_all')) ?> <?= icon('arrow-right') ?></a>
     </div>
     <div class="grid portfolio-grid">
       <?php foreach ($showcase as $p): ?>

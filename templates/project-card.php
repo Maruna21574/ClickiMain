@@ -13,7 +13,7 @@ if (($p['category_slug'] ?? '') === 'web') {
     $strip = array_slice(array_column(get_project_images((int)$p['id']), 'image_path'), 0, 5);
 }
 ?>
-<a href="/projekt.php?slug=<?= urlencode($p['slug']) ?>" class="project-card" <?= $cardAttr ?>>
+<a href="/projekt?slug=<?= urlencode($p['slug']) ?>" class="project-card" <?= $cardAttr ?>>
   <div class="project-card__media">
     <div class="project-card__inner">
       <img src="<?= h($cover) ?>" alt="<?= h(field($p, 'title')) ?>" loading="lazy">

@@ -16,7 +16,7 @@ require __DIR__ . '/templates/header.php';
     <div class="error-page__code text-gradient" style="margin-top:1rem;">404</div>
     <h1 style="margin-top:1rem;"><?= h(t('error404.title')) ?></h1>
     <p class="lead" style="margin:1.2rem auto 2rem;max-width:480px;"><?= h(t('error404.subtitle')) ?></p>
-    <a href="/index.php" class="btn btn--primary"><?= h(t('error404.button')) ?> <?= icon('arrow-right') ?></a>
+    <a href="/" class="btn btn--primary"><?= h(t('error404.button')) ?> <?= icon('arrow-right') ?></a>
   </div>
 </section>
 

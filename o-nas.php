@@ -38,8 +38,8 @@ require __DIR__ . '/templates/header.php';
       <p class="lead about-hero__lead"><?= h(t('about.hero.subtitle')) ?></p>
 
       <div class="about-hero__actions">
-        <a href="/portfolio.php" class="btn btn--primary"><?= h(t('about.hero.cta_portfolio')) ?> <?= icon('arrow-right') ?></a>
-        <a href="/kontakt.php" class="btn btn--ghost"><?= h(t('cta.button')) ?> <?= icon('arrow-right') ?></a>
+        <a href="/portfolio" class="btn btn--primary"><?= h(t('about.hero.cta_portfolio')) ?> <?= icon('arrow-right') ?></a>
+        <a href="/kontakt" class="btn btn--ghost"><?= h(t('cta.button')) ?> <?= icon('arrow-right') ?></a>
       </div>
     </div>
 
@@ -47,7 +47,7 @@ require __DIR__ . '/templates/header.php';
     <div class="collage" data-reveal aria-hidden="true">
       <span class="collage__glow"></span>
       <?php foreach ($showcase as $p): ?>
-      <a href="/projekt.php?slug=<?= urlencode($p['slug']) ?>" class="collage__item" tabindex="-1">
+      <a href="/projekt?slug=<?= urlencode($p['slug']) ?>" class="collage__item" tabindex="-1">
         <span class="collage__card"><img src="<?= h(cover_image($p)) ?>" alt="" loading="lazy"></span>
       </a>
       <?php endforeach; ?>

@@ -22,7 +22,7 @@ $adminActive = $adminActive ?? '';
   <aside class="admin-sidebar">
     <div class="brand"><img src="/assets/img/clicki_logo_white.png" alt="Clicki"></div>
     <nav class="admin-nav">
-      <a href="/admin/index.php" class="<?= $adminActive === 'dashboard' ? 'is-active' : '' ?>"><?= icon('layers') ?> Projekty</a>
+      <a href="/admin/" class="<?= $adminActive === 'dashboard' ? 'is-active' : '' ?>"><?= icon('layers') ?> Projekty</a>
       <a href="/admin/blog.php" class="<?= $adminActive === 'blog' ? 'is-active' : '' ?>"><?= icon('layers') ?> Blog</a>
       <a href="/admin/categories.php" class="<?= $adminActive === 'categories' ? 'is-active' : '' ?>"><?= icon('sliders') ?> Kategórie</a>
       <a href="/admin/bookings.php" class="<?= $adminActive === 'bookings' ? 'is-active' : '' ?>"><?= icon('clock') ?> Rezervácie</a>

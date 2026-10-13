@@ -10,7 +10,7 @@ if ($isEdit) {
     $stmt->execute([$id]);
     $project = $stmt->fetch(PDO::FETCH_ASSOC);
     if (!$project) {
-        redirect('/admin/index.php');
+        redirect('/admin/');
     }
 }
 
@@ -110,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        redirect('/admin/index.php');
+        redirect('/admin/');
     }
 }
 
@@ -123,7 +123,7 @@ require __DIR__ . '/../templates/admin-header.php';
 
 <div class="admin-topbar">
   <h1><?= $isEdit ? 'Upraviť projekt' : 'Nový projekt' ?></h1>
-  <a href="/admin/index.php" class="btn btn--ghost btn--sm">Späť na zoznam</a>
+  <a href="/admin/" class="btn btn--ghost btn--sm">Späť na zoznam</a>
 </div>
 
 <?php foreach ($errors as $e): ?>

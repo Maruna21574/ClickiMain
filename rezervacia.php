@@ -177,7 +177,7 @@ require __DIR__ . '/templates/header.php';
       <span class="book-done__icon"><?= icon('check') ?></span>
       <div class="lp-hero__actions" style="justify-content:center;margin-top:0;">
         <a href="/" class="btn btn--primary"><?= h($L['ok_back']) ?> <?= icon('arrow-right') ?></a>
-        <a href="/portfolio.php" class="btn btn--ghost"><?= h(t('nav.portfolio')) ?></a>
+        <a href="/portfolio" class="btn btn--ghost"><?= h(t('nav.portfolio')) ?></a>
       </div>
     </div>
     <?php else: ?>
@@ -222,7 +222,7 @@ require __DIR__ . '/templates/header.php';
         <?php endif; ?>
       </div>
 
-      <p class="book-other"><?= h($L['other']) ?> <a href="/kontakt.php"><?= h($L['other_write']) ?></a> <?= h($L['or']) ?> <a href="tel:<?= h(CONTACT_PHONE) ?>"><?= h(CONTACT_PHONE_DISPLAY) ?></a>.</p>
+      <p class="book-other"><?= h($L['other']) ?> <a href="/kontakt"><?= h($L['other_write']) ?></a> <?= h($L['or']) ?> <a href="tel:<?= h(CONTACT_PHONE) ?>"><?= h(CONTACT_PHONE_DISPLAY) ?></a>.</p>
       <?php foreach ($days as $i => $d): ?>
       <div class="book-times<?= $i === 0 ? ' is-active' : '' ?>" data-times="<?= h($d['date']) ?>">
         <?php foreach ($d['times'] as $tm): $val = $d['date'] . '|' . $tm; ?>

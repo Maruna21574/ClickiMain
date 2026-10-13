@@ -3,17 +3,17 @@
 require_once __DIR__ . '/inc/functions.php';
 
 $urls = [];
-foreach (['/', '/sluzby.php', '/portfolio.php', '/o-nas.php', '/kontakt.php', '/ponuka.php', '/blog.php', '/konzultacia', '/gdpr.php', '/cookies.php'] as $path) {
+foreach (['/', '/sluzby', '/portfolio', '/o-nas', '/kontakt', '/ponuka', '/blog', '/konzultacia', '/gdpr', '/cookies'] as $path) {
     $urls[] = [$path, null, $path === '/' ? '1.0' : '0.7'];
 }
 foreach (array_keys(landing_pages()) as $slug) {
     $urls[] = ['/' . $slug, null, '0.9'];
 }
 foreach (get_projects() as $p) {
-    $urls[] = ['/projekt.php?slug=' . urlencode($p['slug']), substr((string)$p['created_at'], 0, 10), '0.6'];
+    $urls[] = ['/projekt?slug=' . urlencode($p['slug']), substr((string)$p['created_at'], 0, 10), '0.6'];
 }
 foreach (get_posts() as $post) {
-    $urls[] = ['/clanok.php?slug=' . urlencode($post['slug']), $post['published_at'], '0.6'];
+    $urls[] = ['/clanok?slug=' . urlencode($post['slug']), $post['published_at'], '0.6'];
 }
 
 header('Content-Type: application/xml; charset=utf-8');

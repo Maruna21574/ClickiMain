@@ -45,8 +45,8 @@ require __DIR__ . '/templates/header.php';
     </h1>
     <p class="hero__subtitle lead"><?= brand(t('home.hero.subtitle')) ?></p>
     <div class="hero__actions">
-      <a href="/ponuka.php" class="btn btn--primary"><?= h(t('home.hero.cta_primary')) ?> <?= icon('arrow-right') ?></a>
-      <a href="/portfolio.php" class="btn btn--ghost"><?= h(t('home.hero.cta_secondary')) ?> <?= icon('arrow-right') ?></a>
+      <a href="/ponuka" class="btn btn--primary"><?= h(t('home.hero.cta_primary')) ?> <?= icon('arrow-right') ?></a>
+      <a href="/portfolio" class="btn btn--ghost"><?= h(t('home.hero.cta_secondary')) ?> <?= icon('arrow-right') ?></a>
     </div>
   </div>
   <div class="hero__scroll">
@@ -88,7 +88,7 @@ require __DIR__ . '/templates/header.php';
 
     <div class="grid services-grid" data-reveal>
       <?php foreach ($services as $slug => $svc): ?>
-      <a href="/sluzby.php#<?= h($slug) ?>" class="card service-card">
+      <a href="/sluzby#<?= h($slug) ?>" class="card service-card">
         <span class="icon-tile"><?= icon($serviceIcons[$slug] ?? 'star') ?></span>
         <h3><?= h($svc['title']) ?></h3>
         <p><?= h($svc['teaser']) ?></p>
@@ -98,7 +98,7 @@ require __DIR__ . '/templates/header.php';
     </div>
 
     <div class="text-center" style="margin-top:3rem;">
-      <a href="/sluzby.php" class="btn btn--chrome"><?= h(t('home.services.link')) ?> <?= icon('arrow-right') ?></a>
+      <a href="/sluzby" class="btn btn--chrome"><?= h(t('home.services.link')) ?> <?= icon('arrow-right') ?></a>
     </div>
   </div>
 </section>
@@ -136,7 +136,7 @@ require __DIR__ . '/templates/header.php';
     </div>
 
     <div class="text-center" style="margin-top:3rem;">
-      <a href="/portfolio.php" class="btn btn--ghost"><?= h(t('home.featured.link')) ?> <?= icon('arrow-right') ?></a>
+      <a href="/portfolio" class="btn btn--ghost"><?= h(t('home.featured.link')) ?> <?= icon('arrow-right') ?></a>
     </div>
   </div>
 </section>

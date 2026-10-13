@@ -3,7 +3,7 @@ require_once __DIR__ . '/../inc/functions.php';
 require_login();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !csrf_verify()) {
-    redirect('/admin/index.php');
+    redirect('/admin/');
 }
 
 $id = (int)($_POST['id'] ?? 0);
@@ -26,4 +26,4 @@ if ($id) {
     }
 }
 
-redirect('/admin/index.php');
+redirect('/admin/');
