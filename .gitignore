@@ -9,3 +9,6 @@
 # OS / editor
 .DS_Store
 Thumbs.db
+
+# Automaticky generované náhľady fotiek
+/uploads/thumbs/

@@ -590,7 +590,7 @@ function render_post_body(string $text, ?array &$toc = null): string
             $p = get_project_by_slug($m[1]);
             if ($p) {
                 $out .= '<a class="post-embed" href="/projekt?slug=' . urlencode($p['slug']) . '">'
-                    . '<img src="' . h(cover_image($p)) . '" alt="" loading="lazy">'
+                    . '<img src="' . h(thumb(cover_image($p))) . '" alt="" loading="lazy" decoding="async">'
                     . '<span class="post-embed__text"><small>' . h(t('blog.embed_label')) . '</small>'
                     . '<strong>' . h(field($p, 'title')) . '</strong>'
                     . '<em>' . h(t('blog.embed_view')) . '</em></span></a>' . "\n";
@@ -686,4 +686,43 @@ function icon(string $name, string $class = 'icon'): string
     ];
     $inner = $paths[$name] ?? $paths['star'];
     return '<svg class="' . h($class) . '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' . $inner . '</svg>';
+}
+
+/**
+ * Zmenšený náhľad nahratej fotky (WebP) pre karty a zoznamy — cachuje sa do /uploads/thumbs/.
+ * Ak sa náhľad nedá vytvoriť (iný zdroj, chýba GD/WebP), vráti pôvodnú adresu.
+ */
+function thumb(string $src, int $width = 640): string
+{
+    if (strpos($src, UPLOADS_URL . '/') !== 0 || !function_exists('imagewebp') || !function_exists('imagecreatefromstring')) {
+        return $src;
+    }
+    $name = pathinfo($src, PATHINFO_FILENAME);
+    $rel = '/uploads/thumbs/' . $width . '-' . $name . '.webp';
+    $dst = SITE_ROOT . $rel;
+    $orig = SITE_ROOT . $src;
+    if (is_file($dst) && (!is_file($orig) || filemtime($dst) >= filemtime($orig))) {
+        return $rel;
+    }
+    if (!is_file($orig)) {
+        return $src;
+    }
+    $im = @imagecreatefromstring((string)file_get_contents($orig));
+    if (!$im) {
+        return $src;
+    }
+    if (imagesx($im) > $width) {
+        $scaled = imagescale($im, $width, -1, IMG_BICUBIC);
+        if ($scaled) {
+            imagedestroy($im);
+            $im = $scaled;
+        }
+    }
+    if (!is_dir(dirname($dst))) {
+        @mkdir(dirname($dst), 0755, true);
+    }
+    imagepalettetotruecolor($im);
+    $ok = @imagewebp($im, $dst, 78);
+    imagedestroy($im);
+    return $ok ? $rel : $src;
 }

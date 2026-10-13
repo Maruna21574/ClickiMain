@@ -16,11 +16,11 @@ if (($p['category_slug'] ?? '') === 'web') {
 <a href="/projekt?slug=<?= urlencode($p['slug']) ?>" class="project-card" <?= $cardAttr ?>>
   <div class="project-card__media">
     <div class="project-card__inner">
-      <img src="<?= h($cover) ?>" alt="<?= h(field($p, 'title')) ?>" loading="lazy">
+      <img src="<?= h(thumb($cover)) ?>" alt="<?= h(field($p, 'title')) ?>" loading="lazy" decoding="async">
       <?php if ($strip): ?>
       <div class="project-card__strip" data-strip style="--n: <?= count($strip) + 1 ?>" aria-hidden="true">
-        <img src="<?= h($cover) ?>" alt="">
-        <?php foreach ($strip as $src): ?><img data-src="<?= h($src) ?>" alt=""><?php endforeach; ?>
+        <img src="<?= h(thumb($cover)) ?>" alt="">
+        <?php foreach ($strip as $src): ?><img data-src="<?= h(thumb($src)) ?>" alt=""><?php endforeach; ?>
       </div>
       <?php endif; ?>
     </div>

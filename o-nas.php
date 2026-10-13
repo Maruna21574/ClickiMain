@@ -48,7 +48,7 @@ require __DIR__ . '/templates/header.php';
       <span class="collage__glow"></span>
       <?php foreach ($showcase as $p): ?>
       <a href="/projekt?slug=<?= urlencode($p['slug']) ?>" class="collage__item" tabindex="-1">
-        <span class="collage__card"><img src="<?= h(cover_image($p)) ?>" alt="" loading="lazy"></span>
+        <span class="collage__card"><img src="<?= h(thumb(cover_image($p))) ?>" alt="" loading="lazy" decoding="async"></span>
       </a>
       <?php endforeach; ?>
     </div>
