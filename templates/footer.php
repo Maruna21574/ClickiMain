@@ -120,10 +120,11 @@ $cmdkData = [
     <button type="button" class="btn btn--primary btn--sm" data-cookie-choice="all"><?= h(t('cookie.accept')) ?></button>
   </div>
 </div>
-<script src="<?= asset('/assets/js/consent.js') ?>" defer></script>
-<script src="<?= asset('/assets/js/contact-fab.js') ?>" defer></script>
-<script src="<?= asset('/assets/js/main.js') ?>" defer></script>
-<script src="<?= asset('/assets/js/fx.js') ?>" defer></script>
+<?php if (is_file(SITE_ROOT . '/assets/dist/site.min.js')): ?>
+<script src="<?= asset('/assets/dist/site.min.js') ?>" defer></script>
+<?php else: foreach (['consent', 'contact-fab', 'main', 'fx'] as $jsName): ?>
+<script src="<?= asset('/assets/js/' . $jsName . '.js') ?>" defer></script>
+<?php endforeach; endif; ?>
 <?php if (!empty($extraScripts)) foreach ($extraScripts as $src): ?>
 <script src="<?= h($src) ?>" defer></script>
 <?php endforeach; ?>

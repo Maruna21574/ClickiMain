@@ -76,12 +76,11 @@ if (!preg_match('#^https?://#', $ogImg)) { $ogImg = site_url($ogImg); }
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"></noscript>
 
-<link rel="stylesheet" href="<?= asset('/assets/css/tokens.css') ?>">
-<link rel="stylesheet" href="<?= asset('/assets/css/base.css') ?>">
-<link rel="stylesheet" href="<?= asset('/assets/css/components.css') ?>">
-<link rel="stylesheet" href="<?= asset('/assets/css/animations.css') ?>">
-<link rel="stylesheet" href="<?= asset('/assets/css/pages.css') ?>">
-<link rel="stylesheet" href="<?= asset('/assets/css/fx.css') ?>">
+<?php if (is_file(SITE_ROOT . '/assets/dist/site.min.css')): ?>
+<link rel="stylesheet" href="<?= asset('/assets/dist/site.min.css') ?>">
+<?php else: foreach (['tokens', 'base', 'components', 'animations', 'pages', 'fx'] as $cssName): ?>
+<link rel="stylesheet" href="<?= asset('/assets/css/' . $cssName . '.css') ?>">
+<?php endforeach; endif; ?>
 </head>
 <body class="<?= h($bodyClass) ?>">
 <div class="scroll-progress" aria-hidden="true"><span></span></div>
